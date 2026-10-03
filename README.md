@@ -4,7 +4,5 @@ FastAPI framework
 
 SQLAlchemy 2.0 + Alembic
 
-// 30/9/2026
-Uyen : Design register( username, password, email ) /login(username or email, password) form
+Set `DATABASE_URL` in `BE/.env` to configure the database. SQL statement logging is disabled by default; set `SQLALCHEMY_ECHO=true` to enable it. The FastAPI lifespan creates missing tables with SQLAlchemy `create_all`; it does not update existing schemas, so schema changes must be applied with Alembic migrations.
 
-Phu, Vinh: Create user table ( id, username, hashPassword, email ), create function to add data into table user
