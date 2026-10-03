@@ -1,14 +1,17 @@
 import re
 
 from pwdlib import PasswordHash
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 
 from Repositories.AuthRepository import AuthRepository
 
 
 class RegisterService:
 
-    def __init__(self):
-        self.auth_repository = AuthRepository()
+    def __init__(self, session: Session):
+        self.session = session
+        self.auth_repository = AuthRepository(session)
         self.password_hash = PasswordHash.recommended()
 
     def check_username(self, username):
@@ -90,8 +93,6 @@ class RegisterService:
         if not self.check_email(email):
             return None
 
-        self.auth_repository.create_user_table()
-
         existing_username = (
             self.auth_repository.get_user_by_username(username)
         )
@@ -115,5 +116,14 @@ class RegisterService:
             hashed_password,
             email
         )
+
+        if user is None:
+            return None
+
+        try:
+            self.session.commit()
+        except IntegrityError:
+            self.session.rollback()
+            return None
 
         return user

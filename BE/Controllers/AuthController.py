@@ -1,7 +1,9 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
 
 from Schemas.RegisterRequest import RegisterRequest
 from Services.Register import RegisterService
+from database import get_db
 
 
 class AuthController:
@@ -11,8 +13,6 @@ class AuthController:
             tags=["Authentication"]
         )
 
-        self.register_service = RegisterService()
-
         self.router.add_api_route(
             "/register",
             self.register,
@@ -20,8 +20,13 @@ class AuthController:
             status_code=201
         )
 
-    def register(self, data: RegisterRequest):
-        user = self.register_service.register_user(
+    def register(
+        self,
+        data: RegisterRequest,
+        session: Session = Depends(get_db)
+    ):
+        register_service = RegisterService(session)
+        user = register_service.register_user(
             data.username,
             data.password,
             data.email
