@@ -1,54 +1,74 @@
+import os
+from pathlib import Path
+
+from dotenv import load_dotenv
 from sqlalchemy import create_engine, select
-from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 
-from Models.Users import Base, User
-
-
-engine = create_engine(
-    "sqlite:///users.db",
-    echo=True
-)   #Kết nối database
+from Models.Base import Base
+from Models.Users import User
 
 
-def create_user_table():    #Tạo bảng
-    Base.metadata.create_all(engine)
-    
+class AuthRepository:
 
+    def __init__(self):
+        env_path = Path(__file__).resolve().parents[1] / ".env"
 
-def get_user_by_username(username):     #Tìm username
-     with Session(engine) as session:
-        statement = select(User).where(User.username == username)
+        load_dotenv(env_path)
 
-        user = session.scalar(statement)
+        database_url = os.getenv("DATABASE_URL")
 
-        return user
+        if database_url is None:
+            raise ValueError(
+                "DATABASE_URL khong ton tai trong file .env"
+            )
 
-def get_user_by_email(email):     #Tìm email
-    with Session(engine) as session:
-        statement = select(User).where(User.email == email)
-
-        user = session.scalar(statement)
-
-        return user
-
-
-def add_user(username, hashPassword, email):    #Thêm User
-    with Session(engine) as session:
-
-        user = User(
-            username=username,
-            hashPassword=hashPassword,
-            email=email
+        self.engine = create_engine(
+            database_url,
+            echo=True
         )
 
-        session.add(user)
+    def create_user_table(self):
+        Base.metadata.create_all(self.engine)
 
-        try:
-            session.commit()
-            session.refresh(user)
+    def get_user_by_username(self, username):
+        with Session(self.engine) as session:
+            statement = select(User).where(
+                User.username == username
+            )
+
+            user = session.scalar(statement)
+
             return user
 
-        except IntegrityError:
-            session.rollback()
-            return None
+    def get_user_by_email(self, email):
+        with Session(self.engine) as session:
+            statement = select(User).where(
+                User.email == email
+            )
+
+            user = session.scalar(statement)
+
+            return user
+
+    def add_user(self, username, hashPassword, email):
+        with Session(self.engine) as session:
+            user = User(
+                username=username,
+                hashPassword=hashPassword,
+                email=email
+            )
+
+            session.add(user)
+
+            try:
+                session.commit()
+                session.refresh(user)
+
+                return user
+
+            except IntegrityError:
+                session.rollback()
+
+                return None

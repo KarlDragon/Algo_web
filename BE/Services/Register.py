@@ -1,136 +1,119 @@
 import re
+
 from pwdlib import PasswordHash
 
-from Repositories.AuthRepository import (
-    create_user_table,
-    add_user,
-    get_user_by_username,
-    get_user_by_email
-)
-
-password_hash = PasswordHash.recommended()
+from Repositories.AuthRepository import AuthRepository
 
 
-def check_username(username):
-    # Username khong duoc rong
-    if username == "":
-        print("Username khong duoc rong!")
-        return False
+class RegisterService:
 
-    # Username phai co chu
-    if not re.search(r"[A-Za-z]", username):
-        print("Username phai co it nhat 1 chu cai!")
-        return False
+    def __init__(self):
+        self.auth_repository = AuthRepository()
+        self.password_hash = PasswordHash.recommended()
 
-    # Username phai co so
-    if not re.search(r"[0-9]", username):
-        print("Username phai co it nhat 1 chu so!")
-        return False
+    def check_username(self, username):
+        if username == "":
+            print("Username khong duoc rong!")
+            return False
 
-    return True
-    # Username khong duoc qua 50 ky tu
-    if len(username) > 50:
-        print("Username khong duoc qua 50 ky tu!")
-        return False
+        if len(username) > 50:
+            print("Username khong duoc qua 50 ky tu!")
+            return False
 
-def check_password(password):
-    # Khong duoc rong
-    if password == "":
-        print("Password khong duoc rong!")
-        return False
+        if not re.search(r"[A-Za-z]", username):
+            print("Username phai co it nhat 1 chu cai!")
+            return False
 
-    # Toi thieu 8 ky tu
-    if len(password) < 8:
-        print("Password phai co it nhat 8 ky tu!")
-        return False
+        if not re.search(r"[0-9]", username):
+            print("Username phai co it nhat 1 chu so!")
+            return False
 
-    # Khong qua 64 ky tu
-    if len(password) > 64:
-        print("Password khong duoc qua 64 ky tu!")
-        return False
+        return True
 
-    # Phai co chu in hoa
-    if not re.search(r"[A-Z]", password):
-        print("Password phai co it nhat 1 chu cai in hoa!")
-        return False
+    def check_password(self, password):
+        if password == "":
+            print("Password khong duoc rong!")
+            return False
 
-    # Phai co so
-    if not re.search(r"[0-9]", password):
-        print("Password phai co it nhat 1 chu so!")
-        return False
+        if len(password) < 8:
+            print("Password phai co it nhat 8 ky tu!")
+            return False
 
-    # Phai co ky tu dac biet
-    if not re.search(r"[^A-Za-z0-9]", password):
-        print("Password phai co it nhat 1 ky tu dac biet!")
-        return False
+        if len(password) > 64:
+            print("Password khong duoc qua 64 ky tu!")
+            return False
 
-    return True
+        if not re.search(r"[A-Z]", password):
+            print("Password phai co it nhat 1 chu cai in hoa!")
+            return False
 
+        if not re.search(r"[0-9]", password):
+            print("Password phai co it nhat 1 chu so!")
+            return False
 
-def check_email(email):
-    # Email khong duoc rong
-    if email == "":
-        print("Email khong duoc rong!")
-        return False
+        if not re.search(r"[^A-Za-z0-9]", password):
+            print("Password phai co it nhat 1 ky tu dac biet!")
+            return False
 
-    # Email khong duoc qua 100 ky tu
-    if len(email) > 100:
-        print("Email khong duoc qua 100 ky tu!")
-        return False
+        return True
 
-    # Kiem tra dinh dang email
-    email_pattern = r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+    def check_email(self, email):
+        if email == "":
+            print("Email khong duoc rong!")
+            return False
 
-    if not re.match(email_pattern, email):
-        print("Email khong hop le!")
-        return False
+        if len(email) > 100:
+            print("Email khong duoc qua 100 ky tu!")
+            return False
 
-    return True
+        email_pattern = (
+            r"^[A-Za-z0-9._%+-]+@"
+            r"[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+        )
 
-def hash_password(password):
-    return password_hash.hash(password)
+        if not re.match(email_pattern, email):
+            print("Email khong hop le!")
+            return False
 
-def register_user(username, password, email):
+        return True
 
-    # Kiem tra username
-    if not check_username(username):
-        return None
+    def hash_password(self, password):
+        return self.password_hash.hash(password)
 
-    # Kiem tra password
-    if not check_password(password):
-        return None
+    def register_user(self, username, password, email):
+        if not self.check_username(username):
+            return None
 
-    # Kiem tra email
-    if not check_email(email):
-        return None
+        if not self.check_password(password):
+            return None
 
-    # Tao bang users neu chua ton tai
-    create_user_table()
+        if not self.check_email(email):
+            return None
 
-    # Kiem tra username da ton tai chua
-    existing_username = get_user_by_username(username)
+        self.auth_repository.create_user_table()
 
-    if existing_username is not None:
-        print("Username da ton tai!")
-        return None
+        existing_username = (
+            self.auth_repository.get_user_by_username(username)
+        )
 
-    # Kiem tra email da ton tai chua
-    existing_email = get_user_by_email(email)
+        if existing_username is not None:
+            print("Username da ton tai!")
+            return None
 
-    if existing_email is not None:
-        print("Email da ton tai!")
-        return None
+        existing_email = (
+            self.auth_repository.get_user_by_email(email)
+        )
 
-    # Hash password
-    hashed_password = hash_password(password)
+        if existing_email is not None:
+            print("Email da ton tai!")
+            return None
 
-    # Them user vao database
-    user = add_user(
-        username,
-        hashed_password,
-        email
-    )
+        hashed_password = self.hash_password(password)
 
-    return user
+        user = self.auth_repository.add_user(
+            username,
+            hashed_password,
+            email
+        )
 
-# PHẦN NÀY TUI BỔ SUNG THÊM CÁI CHECK EMAIL VÀ HASH PASSWORD !!!!!
+        return user
