@@ -1,0 +1,28 @@
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
+from Services.Login import login_user
+
+router = APIRouter()
+
+
+class LoginRequest(BaseModel):
+    login: str
+    password: str
+
+
+@router.post("/login")
+def login_endpoint(data: LoginRequest):
+    user = login_user(data.login, data.password)
+
+    if user is None:
+        raise HTTPException(
+            status_code=401,
+            detail="Username/email hoac password khong dung"
+        )
+
+    return {
+    "message": "Dang nhap thanh cong",
+    "id": user.id,
+    "username": user.username,
+    "email": user.email
+}
