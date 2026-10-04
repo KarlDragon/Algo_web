@@ -1,0 +1,78 @@
+import re
+
+from Repositories.AuthRepository import AuthRepository
+
+
+auth_repository = AuthRepository()
+
+
+def check_username(username):
+    # Username khong duoc rong
+    if username == "":
+        print("Username khong duoc rong!")
+        return False
+
+    # Username phai co chu
+    if not re.search(r"[A-Za-z]", username):
+        print("Username phai co it nhat 1 chu cai!")
+        return False
+
+    # Username phai co so
+    if not re.search(r"[0-9]", username):
+        print("Username phai co it nhat 1 chu so!")
+        return False
+
+    return True
+
+
+def check_password(password):
+    # Khong duoc rong
+    if password == "":
+        print("Password khong duoc rong!")
+        return False
+
+    # Toi thieu 8 ky tu
+    if len(password) < 8:
+        print("Password phai co it nhat 8 ky tu!")
+        return False
+
+    # Khong qua 64 ky tu
+    if len(password) > 64:
+        print("Password khong duoc qua 64 ky tu!")
+        return False
+
+    # Phai co chu in hoa
+    if not re.search(r"[A-Z]", password):
+        print("Password phai co it nhat 1 chu cai in hoa!")
+        return False
+
+    # Phai co so
+    if not re.search(r"[0-9]", password):
+        print("Password phai co it nhat 1 chu so!")
+        return False
+
+    # Phai co ky tu dac biet
+    if not re.search(r"[^A-Za-z0-9]", password):
+        print("Password phai co it nhat 1 ky tu dac biet!")
+        return False
+
+    return True
+
+
+def register_user(username, hashPassword, email):
+
+    if not check_username(username):
+        return None
+
+    if not check_password(hashPassword):
+        return None
+
+    auth_repository.create_user_table()
+
+    user = auth_repository.add_user(
+        username,
+        hashPassword,
+        email
+    )
+
+    return userf
