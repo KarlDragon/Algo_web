@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -6,7 +6,6 @@ from Models.Users import User
 
 
 class AuthRepository:
-
     def __init__(self, session: Session):
         self.session = session
 
@@ -14,14 +13,21 @@ class AuthRepository:
         statement = select(User).where(
             User.username == username
         )
-
         return self.session.scalar(statement)
 
     def get_user_by_email(self, email):
         statement = select(User).where(
             User.email == email
         )
+        return self.session.scalar(statement)
 
+    def get_user_by_username_or_email(self, login):
+        statement = select(User).where(
+            or_(
+                User.username == login,
+                User.email == login
+            )
+        )
         return self.session.scalar(statement)
 
     def add_user(self, username, hashPassword, email):
@@ -30,12 +36,14 @@ class AuthRepository:
             hashPassword=hashPassword,
             email=email
         )
+
         self.session.add(user)
 
         try:
             self.session.flush()
             self.session.refresh(user)
             return user
+
         except IntegrityError:
             self.session.rollback()
             return None
