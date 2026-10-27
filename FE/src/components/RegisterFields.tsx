@@ -2,7 +2,7 @@ function RegisterFields() {
   return (
     <>
       <div className="form-field">
-        <label htmlFor="username">Username</label>
+        <label htmlFor="username">Tên đăng nhập</label>
         <input
           aria-describedby="username-hint"
           autoComplete="username"
@@ -14,7 +14,7 @@ function RegisterFields() {
           title="Use at least one letter and one number."
         />
         <span className="field-hint" id="username-hint">
-          Up to 50 characters; include at least one letter and one number.
+          Phải có 1 chữ và 1 số.
         </span>
       </div>
 
@@ -32,7 +32,7 @@ function RegisterFields() {
       </div>
 
       <div className="form-field">
-        <label htmlFor="register-password">Password</label>
+        <label htmlFor="register-password">Mật khẩu</label>
         <input
           aria-describedby="password-hint"
           autoComplete="new-password"
@@ -42,12 +42,11 @@ function RegisterFields() {
           name="password"
           pattern="(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,64}"
           required
-          title="Use 8–64 characters, including an uppercase letter, a number, and a special character."
+          title="Mật khẩu ít nhất 8 ký tự, có chữ cái in hoa, số và ký tự đặc biệt"
           type="password"
         />
         <span className="field-hint" id="password-hint">
-          8–64 characters, with an uppercase letter, a number, and a special
-          character.
+          Mật khẩu ít nhất 8 ký tự, có chữ cái in hoa, số và ký tự đặc biệt
         </span>
       </div>
     </>

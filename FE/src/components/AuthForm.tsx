@@ -55,12 +55,12 @@ function AuthForm({
       <section className="auth-card" aria-labelledby="auth-title">
         <header className="auth-header">
           <h1 id="auth-title">
-            {isRegistering ? 'Create account' : 'Welcome back'}
+            {isRegistering ? 'Tạo tài khoản mới' : 'Chào mừng!'}
           </h1>
           <p>
             {isRegistering
-              ? 'Enter your details to get started.'
-              : 'Sign in with your username or email.'}
+              ? 'Vui lòng nhập thông tin.'
+              : 'Tên đăng nhập hoặc email.'}
           </p>
         </header>
 
@@ -72,7 +72,7 @@ function AuthForm({
             onClick={() => onModeChange('login')}
             type="button"
           >
-            Log in
+            Đăng nhập
           </button>
           <button
             aria-pressed={isRegistering}
@@ -81,7 +81,7 @@ function AuthForm({
             onClick={() => onModeChange('register')}
             type="button"
           >
-            Register
+            Đăng ký
           </button>
         </div>
 
@@ -96,10 +96,10 @@ function AuthForm({
 
           <button className="submit-button" disabled={isSubmitting} type="submit">
             {isSubmitting
-              ? 'Please wait…'
+              ? 'Chờ trong giây lát…'
               : isRegistering
-                ? 'Create account'
-                : 'Log in'}
+                ? 'Đăng ký'
+                : 'Đăng nhập'}
           </button>
         </form>
 

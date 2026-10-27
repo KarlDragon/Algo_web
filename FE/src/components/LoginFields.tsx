@@ -2,7 +2,7 @@ function LoginFields() {
   return (
     <>
       <div className="form-field">
-        <label htmlFor="login">Username or email</label>
+        <label htmlFor="login">Tên đăng nhập hoặc email</label>
         <input
           autoComplete="username"
           id="login"
@@ -12,7 +12,7 @@ function LoginFields() {
       </div>
 
       <div className="form-field">
-        <label htmlFor="login-password">Password</label>
+        <label htmlFor="login-password">Mật khẩu</label>
         <input
           autoComplete="current-password"
           id="login-password"
