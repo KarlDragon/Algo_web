@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import AuthForm from './components/AuthForm'
+import NightSkyCanvas from './components/NightSkyCanvas'
 import { useAuth } from './hooks/useAuth'
 import type { AuthMode } from './models/auth'
 
@@ -14,13 +15,16 @@ function App() {
   }
 
   return (
-    <AuthForm
-      isSubmitting={isSubmitting}
-      mode={mode}
-      onModeChange={changeMode}
-      onSubmit={submit}
-      status={status}
-    />
+    <>
+      <NightSkyCanvas />
+      <AuthForm
+        isSubmitting={isSubmitting}
+        mode={mode}
+        onModeChange={changeMode}
+        onSubmit={submit}
+        status={status}
+      />
+    </>
   )
 }
 

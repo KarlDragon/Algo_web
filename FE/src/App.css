@@ -1,3 +1,20 @@
+.night-sky-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    ellipse at 50% 110%,
+    #0d1d38 0%,
+    #050a16 60%,
+    #03050c 100%
+  );
+  pointer-events: none;
+  touch-action: none;
+}
+
 .auth-page {
   display: grid;
   min-height: 100vh;
