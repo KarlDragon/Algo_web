@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cây Nào Hợp Với Bạn</title>
+<style>
+:root { color-scheme: light; }
+body { margin: 0; }
+[hidden] { display: none !important; }
+/* Bố cục: một thẻ giữa trang như màn hình máy tính bảng, nền màu nước bạc hà, lá ở góc, bụi vàng trôi nhẹ; tiến độ là mầm cây lớn dần */
+:root {
+  --bg: #e6f2ee;
+  --surface: #fbfdfc;
+  --fg: #15302c;
+  --muted: #4b6761;
+  --accent: #2f7566;
+  --accent-ink: #ffffff;
+  --accent-soft: #d6ebe5;
+  --gold: #b38a2e;
+  --line: #c8ddd6;
+  --track: #d3e6e0;
+  --wash1: rgba(78, 150, 135, .28);
+  --wash2: rgba(179, 138, 46, .14);
+  --shadow: 0 10px 30px rgba(30, 70, 62, .12);
+  --p-leaf: #4f9a85;
+  --p-leaf-d: #2c6a5b;
+  --p-leaf-l: #86c4ae;
+  --p-pot: #c4a27f;
+  --p-soil: #5a4333;
+  --p-petal: #fbf7ff;
+  --p-petal2: #d58fc8;
+  --p-sun: #f1b52f;
+  --p-brown: #6a4a2e;
+  --p-pink: #e9799d;
+  --f-display: 'Fraunces', Georgia, serif;
+  --f-body: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1d1a;
+    --surface: #142a26;
+    --fg: #e2f0ec;
+    --muted: #9fbab3;
+    --accent: #6cc0b0;
+    --accent-ink: #0d1d1a;
+    --accent-soft: #1d3a35;
+    --gold: #d9b45f;
+    --line: #264640;
+    --track: #1f3a35;
+    --wash1: rgba(80, 160, 142, .22);
+    --wash2: rgba(217, 180, 95, .10);
+    --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+    --p-leaf: #5fae97;
+    --p-leaf-d: #3c8574;
+    --p-leaf-l: #92cfb9;
+    --p-pot: #a8845f;
+    --p-soil: #3b2d23;
+    --p-petal: #f2edf8;
+    --p-brown: #7b5636;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1d1a;
+  --surface: #142a26;
+  --fg: #e2f0ec;
+  --muted: #9fbab3;
+  --accent: #6cc0b0;
+  --accent-ink: #0d1d1a;
+  --accent-soft: #1d3a35;
+  --gold: #d9b45f;
+  --line: #264640;
+  --track: #1f3a35;
+  --wash1: rgba(80, 160, 142, .22);
+  --wash2: rgba(217, 180, 95, .10);
+  --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+  --p-leaf: #5fae97;
+  --p-leaf-d: #3c8574;
+  --p-leaf-l: #92cfb9;
+  --p-pot: #a8845f;
+  --p-soil: #3b2d23;
+  --p-petal: #f2edf8;
+  --p-brown: #7b5636;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { min-height: 100%; }
+body {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(60% 45% at 8% 0%, var(--wash1), transparent 70%),
+    radial-gradient(50% 40% at 100% 100%, var(--wash1), transparent 70%),
+    radial-gradient(35% 30% at 90% 10%, var(--wash2), transparent 70%);
+  background-attachment: fixed;
+  color: var(--fg);
+  font-family: var(--f-body);
+  font-size: 16px;
+  line-height: 1.6;
+  padding-block: 20px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Trang trí nền */
+.deco { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.corner { position: absolute; width: min(46vw, 260px); height: auto; }
+.corner.tl { top: 0; left: 0; }
+.corner.br { bottom: 0; right: 0; transform: rotate(180deg); }
+.speck { position: absolute; border-radius: 50%; background: var(--gold); opacity: .35; animation: drift 9s ease-in-out infinite alternate; }
+@keyframes drift { from { transform: translate(0, 0); } to { transform: translate(10px, -16px); } }
+
+.app { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; }
+.brand { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; color: var(--accent); font-family: var(--f-display); font-weight: 700; font-size: 1.1rem; letter-spacing: .01em; }
+.brand svg { flex: none; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: clamp(20px, 4vw, 40px);
+  min-width: 0;
+}
+.screen { display: none; }
+h1, h2 { font-family: var(--f-display); font-weight: 700; line-height: 1.15; text-wrap: balance; margin: 0; }
+p { margin: 0; }
+
+/* Màn bắt đầu */
+.eyebrow { font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); font-weight: 600; }
+#screen-start h1 { font-size: clamp(2rem, 6vw, 3.1rem); margin: 8px 0 14px; color: var(--accent); }
+.lead { color: var(--muted); max-width: 56ch; }
+.preview { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 26px 0; }
+.preview figure { margin: 0; text-align: center; min-width: 0; }
+.preview .plant { width: 100%; max-width: 110px; height: auto; transition: transform .35s ease; }
+.preview figure:hover .plant { transform: translateY(-6px) rotate(-2deg); }
+.preview figcaption { font-size: .8rem; color: var(--muted); margin-top: 2px; }
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; max-width: 380px; }
+.field label { font-size: .9rem; font-weight: 500; }
+.field input { font: inherit; padding: 11px 14px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--surface); color: var(--fg); }
+.field input:focus-visible { outline: 3px solid var(--accent-soft); border-color: var(--accent); }
+
+.btn { font: inherit; font-weight: 600; cursor: pointer; border: 0; border-radius: 999px; padding: 12px 26px; background: var(--accent); color: var(--accent-ink); transition: transform .2s, box-shadow .2s; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(47, 117, 102, .3); }
+.btn:focus-visible, .opt:focus-visible, .link:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.link { font: inherit; background: none; border: 0; color: var(--muted); cursor: pointer; padding: 8px 4px; }
+.link:hover:not(:disabled) { color: var(--accent); }
+.link:disabled { opacity: .35; cursor: default; }
+
+/* Màn câu hỏi */
+.progress-row { display: flex; align-items: center; gap: 14px; margin-bottom: 26px; }
+#qnum { font-size: .85rem; font-weight: 600; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.track { position: relative; flex: 1; height: 8px; border-radius: 99px; background: var(--track); }
+.fill { position: relative; height: 100%; width: 0; border-radius: 99px; background: var(--accent); transition: width .35s ease; }
+.sprout { position: absolute; right: -12px; top: -15px; width: 28px; height: 28px; color: var(--accent); transform-origin: 50% 100%; animation: sway 2.6s ease-in-out infinite alternate; }
+@keyframes sway { from { transform: rotate(-8deg); } to { transform: rotate(10deg); } }
+#qbody { position: relative; }
+.qhead { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 22px; }
+#qicon { flex: none; width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); }
+#qtext { font-size: clamp(1.3rem, 3.6vw, 1.75rem); padding-top: 4px; }
+#opts { display: flex; flex-direction: column; gap: 10px; }
+.opt { display: flex; gap: 14px; align-items: center; width: 100%; text-align: left; padding: 13px 16px; border: 1.5px solid var(--line); background: var(--surface); color: var(--fg); border-radius: 10px; font: inherit; cursor: pointer; position: relative; overflow: hidden; transition: transform .2s, border-color .2s, background .2s; }
+@media (hover: hover) {
+  .opt:hover { transform: translateX(5px); border-color: var(--accent); background: var(--accent-soft); }
+}
+.badge { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 600; background: var(--accent-soft); color: var(--accent); transition: background .2s, color .2s; }
+.opt .otext { min-width: 0; }
+.opt.picked { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.opt.picked .badge { background: var(--accent-ink); color: var(--accent); }
+.pt { position: absolute; width: 8px; height: 13px; border-radius: 0 100% 0 100%; background: var(--gold); pointer-events: none; }
+.qfoot { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; gap: 12px; flex-wrap: wrap; }
+.hint { font-size: .8rem; color: var(--muted); }
+
+/* Màn kết quả */
+.res-top { display: flex; align-items: center; gap: 10px; color: var(--accent); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; font-size: .85rem; margin-bottom: 18px; }
+.res-main { display: grid; grid-template-columns: 1fr 210px; gap: 26px; align-items: center; margin-bottom: 26px; }
+.res-main > * { min-width: 0; }
+#r-hello { color: var(--muted); font-size: .95rem; }
+#r-name { font-size: clamp(2rem, 6vw, 3rem); color: var(--accent); margin: 2px 0 4px; }
+#r-latin { font-style: italic; color: var(--gold); font-size: .9rem; margin-bottom: 10px; }
+#r-tag { font-family: var(--f-display); font-size: 1.15rem; margin-bottom: 12px; }
+#r-plant { display: flex; justify-content: center; }
+#r-plant .plant { width: 100%; max-width: 210px; height: auto; transform-origin: 50% 100%; animation: grow 1s cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes grow { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.sec { border-top: 1px solid var(--line); padding-top: 20px; margin-top: 22px; }
+.sec h2 { font-size: 1.1rem; margin-bottom: 10px; }
+#r-desc { max-width: 66ch; }
+#r-traits { margin: 0; padding-left: 1.3em; display: flex; flex-direction: column; gap: 6px; max-width: 66ch; }
+#r-care { margin-top: 12px; color: var(--muted); font-size: .92rem; }
+.stat-line { color: var(--muted); font-size: .92rem; margin-bottom: 12px; }
+.stat-line strong { color: var(--fg); }
+.bar { display: grid; grid-template-columns: minmax(104px, 150px) 1fr 46px; gap: 12px; align-items: center; margin-bottom: 10px; font-size: .92rem; }
+.bar .lbl { min-width: 0; }
+.bar .lbl b { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-size: .78rem; margin-right: 6px; }
+.bar .tr { height: 14px; border-radius: 99px; background: var(--track); overflow: hidden; }
+.bar .bar-fill { height: 100%; width: 0; border-radius: 99px; background: var(--p-leaf-l); transition: width .75s ease; }
+.bar.win .bar-fill { background: var(--accent); }
+.bar.win .lbl { font-weight: 600; }
+.bar .pc { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+.res-actions { margin-top: 26px; display: flex; justify-content: center; }
+.foot { text-align: center; color: var(--muted); font-size: .8rem; margin-top: 18px; }
+
+@media (max-width: 600px) {
+  .res-main { grid-template-columns: 1fr; }
+  #r-plant { order: -1; }
+  #r-plant .plant { max-width: 170px; }
+  .bar { grid-template-columns: 1fr 44px; }
+  .bar .lbl { grid-column: 1 / -1; }
+  .qhead { gap: 12px; }
+  #qicon { width: 44px; height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .speck, .sprout, #r-plant .plant { animation: none; }
+  .opt, .btn, .preview .plant { transition: none; }
+}
+</style>
+</head>
+<body>
+<div class="deco" aria-hidden="true">
+  <svg class="corner tl" viewBox="0 0 220 220" fill="none">
+    <g fill="var(--accent)">
+      <path d="M-10 20C50 10 120 50 140 130 70 130 10 90-10 20Z" opacity=".2"/>
+      <path d="M20-10C70 30 80 100 40 160-10 110-10 40 20-10Z" opacity=".16"/>
+      <path d="M90-5C140 20 175 70 170 125 120 105 85 60 90-5Z" opacity=".12"/>
+    </g>
+    <path d="M-5 25C45 40 95 85 138 128" stroke="var(--gold)" stroke-width="1.2" opacity=".5"/>
+  </svg>
+  <svg class="corner br" viewBox="0 0 220 220" fill="none">
+    <g fill="var(--accent)">
+      <path d="M-10 20C50 10 120 50 140 130 70 130 10 90-10 20Z" opacity=".2"/>
+      <path d="M20-10C70 30 80 100 40 160-10 110-10 40 20-10Z" opacity=".16"/>
+      <path d="M90-5C140 20 175 70 170 125 120 105 85 60 90-5Z" opacity=".12"/>
+    </g>
+    <path d="M-5 25C45 40 95 85 138 128" stroke="var(--gold)" stroke-width="1.2" opacity=".5"/>
+  </svg>
+</div>
+
+<div class="app">
+  <header class="brand">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V11"/><path d="M12 12C12 7 8.5 4.5 4 5c0 4.5 3 7.5 8 7Z"/><path d="M12 14c0-4 3-6.5 7-6.5 0 4-2.5 6.5-7 6.5Z"/></svg>
+    <span>Khảo sát cây xanh</span>
+  </header>
+
+  <main class="card">
+    <!-- Màn bắt đầu -->
+    <section class="screen" id="screen-start" style="display:block">
+      <p class="eyebrow">10 câu hỏi · khoảng 2 phút</p>
+      <h1>Loài cây nào hợp với bạn?</h1>
+      <p class="lead">Chọn đáp án giống bạn nhất ở mỗi câu. Cuối bài, mình sẽ cho bạn biết loài cây nào sẽ lớn lên cùng bạn, vì sao, và bạn nghiêng về kiểu tính cách nào nhiều nhất.</p>
+      <div class="preview" id="preview"></div>
+      <div class="field">
+        <label for="name">Tên của bạn (không bắt buộc)</label>
+        <input id="name" type="text" maxlength="24" autocomplete="off" placeholder="Ví dụ: Minh Anh">
+      </div>
+      <button class="btn" id="btn-start" type="button">Bắt đầu gieo hạt</button>
+    </section>
+
+    <!-- Màn câu hỏi -->
+    <section class="screen" id="screen-quiz">
+      <div class="progress-row">
+        <span id="qnum">Câu 1 / 10</span>
+        <div class="track" aria-hidden="true">
+          <div class="fill" id="fill">
+            <svg class="sprout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V12"/><path d="M12 13C12 8 8.5 5.5 4 6c0 4.5 3 7.5 8 7Z" fill="var(--accent-soft)"/><path d="M12 15c0-4 3-6.5 7-6.5 0 4-2.5 6.5-7 6.5Z" fill="var(--accent-soft)"/></svg>
+          </div>
+        </div>
+      </div>
+      <div id="qbody">
+        <div class="qhead">
+          <div id="qicon"></div>
+          <h2 id="qtext"></h2>
+        </div>
+        <div id="opts"></div>
+      </div>
+      <div class="qfoot">
+        <button class="link" id="back" type="button">← Câu trước</button>
+        <span class="hint">Phím tắt: A, B, C, D</span>
+      </div>
+    </section>
+
+    <!-- Màn kết quả -->
+    <section class="screen" id="screen-result">
+      <div class="res-top">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V11"/><path d="M12 12C12 7 8.5 4.5 4 5c0 4.5 3 7.5 8 7Z"/><path d="M12 14c0-4 3-6.5 7-6.5 0 4-2.5 6.5-7 6.5Z"/></svg>
+        Kết quả khảo sát
+      </div>
+      <div class="res-main">
+        <div>
+          <p id="r-hello"></p>
+          <h2 id="r-name"></h2>
+          <p id="r-latin"></p>
+          <p id="r-tag"></p>
+        </div>
+        <div id="r-plant"></div>
+      </div>
+      <p id="r-desc"></p>
+      <div class="sec">
+        <h2>Bản phân tích</h2>
+        <ol id="r-traits"></ol>
+        <p id="r-care"></p>
+      </div>
+      <div class="sec">
+        <h2>Tỷ lệ lựa chọn</h2>
+        <p class="stat-line" id="r-top"></p>
+        <div id="bars"></div>
+        <p class="stat-line" id="r-second" style="margin-top:6px"></p>
+      </div>
+      <div class="res-actions"><button class="btn" id="btn-again" type="button">Làm lại khảo sát</button></div>
+    </section>
+  </main>
+  <p class="foot">Bài khảo sát vui, không phải đánh giá khoa học.</p>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Dữ liệu ---------- */
+  var QUESTIONS = [
+    { i: 'sun', q: 'Buổi sáng cuối tuần lý tưởng của bạn trông như thế nào?',
+      o: ['Ngủ nướng, ở nhà một mình thật yên tĩnh', 'Rủ bạn bè đi cà phê, đi chơi từ sớm', 'Dọn góc làm việc, pha trà và đọc nốt cuốn sách dang dở', 'Đi dạo chậm trong công viên hoặc ngồi thiền'] },
+    { i: 'mountain', q: 'Khi gặp khó khăn lớn, bạn thường làm gì?',
+      o: ['Tự xoay xở, hiếm khi nhờ ai', 'Nhìn mặt tích cực và kể cho mọi người nghe', 'Lên kế hoạch kỹ rồi mới bắt tay vào làm', 'Bình tĩnh chờ đợi, tin rằng mọi chuyện sẽ qua'] },
+    { i: 'palette', q: 'Bảng màu nào làm bạn thấy dễ chịu nhất?',
+      o: ['Xanh rêu và xám đá', 'Vàng nắng và cam', 'Trắng và tím nhạt', 'Xanh ngọc và nâu gỗ'] },
+    { i: 'desk', q: 'Bàn làm việc hoặc góc học của bạn thường ra sao?',
+      o: ['Tối giản, chỉ có thứ cần dùng', 'Nhiều màu, nhiều ảnh, nhiều đồ lưu niệm', 'Gọn gàng, mọi thứ nằm đúng vị trí', 'Yên tĩnh, có cây xanh và ánh sáng dịu'] },
+    { i: 'people', q: 'Trong nhóm bạn, bạn thường là người như thế nào?',
+      o: ['Ít nói nhưng ai cũng tin tưởng', 'Người khuấy động không khí', 'Người để ý từng chi tiết nhỏ', 'Người lắng nghe và cho lời khuyên'] },
+    { i: 'cup', q: 'Bạn chọn thức uống nào cho buổi chiều?',
+      o: ['Cà phê đen không đường', 'Trà đào hoặc nước cam tươi', 'Trà hoa nhài hoặc hoa cúc', 'Trà xanh nóng, uống thật chậm'] },
+    { i: 'alert', q: 'Điều nào làm bạn khó chịu nhất?',
+      o: ['Phải phụ thuộc vào người khác', 'Một ngày buồn tẻ, chẳng có gì xảy ra', 'Làm việc dở dang, cẩu thả', 'Bị thúc ép, vội vàng, mất kiểm soát'] },
+    { i: 'compass', q: 'Chuyến đi mơ ước của bạn là gì?',
+      o: ['Một mình khám phá cao nguyên đá hoặc sa mạc', 'Lễ hội ngoài biển, đông bạn bè, đầy nắng', 'Thành phố cổ có bảo tàng và quán trà đẹp', 'Ngôi làng trên núi mờ sương, có ngôi chùa cổ'] },
+    { i: 'drop', q: 'Nếu có một chậu cây, bạn sẽ chăm nó thế nào?',
+      o: ['Quên tưới cả tuần cũng không sao', 'Tưới thật nhiều, nói chuyện với cây và chụp ảnh khoe', 'Lập lịch tưới chính xác, lau từng chiếc lá', 'Tỉa nhẹ mỗi ngày, kiên nhẫn chờ nhiều năm'] },
+    { i: 'quote', q: 'Câu nói nào giống bạn nhất?',
+      o: ['“Mạnh mẽ trong im lặng.”', '“Cứ hướng về phía mặt trời.”', '“Đẹp nằm ở từng chi tiết.”', '“Chậm mà chắc, càng lâu càng vững.”'] }
+  ];
+
+  var ICONS = {
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',
+    mountain: '<path d="M3 19l6-10 4 6 2-3 6 7z"/>',
+    palette: '<path d="M12 3a9 9 0 1 0 0 18c1.6 0 2-1.1 1.5-2.1s0-2.1 1.5-2.1h2a3 3 0 0 0 3-3C20 8 16.5 3 12 3z"/><circle cx="8" cy="11" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16" cy="10" r="1"/>',
+    desk: '<path d="M4 6h16v9H4zM2 19h20"/>',
+    people: '<circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M3 19c0-3 3-5 6-5s6 2 6 5M15 14.5c3 0 6 1.5 6 4.5"/>',
+    cup: '<path d="M5 8h11v6a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 10h2a2 2 0 0 1 0 4h-2M8 3v2M12 3v2"/>',
+    alert: '<path d="M12 4l9 16H3zM12 10v4M12 17v.5"/>',
+    compass: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+    drop: '<path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z"/>',
+    quote: '<path d="M7 17c-2 0-3-1.5-3-3.5C4 10 6 8 8 7M16 17c-2 0-3-1.5-3-3.5 0-3.5 2-5.5 4-6.5"/>'
+  };
+
+  var PLANTS = {
+    A: { name: 'Xương rồng', latin: 'Cactaceae', tag: 'Mạnh mẽ trong im lặng',
+      desc: 'Xương rồng là loài cây của những người sống tự lập và không cần phô trương. Phần lớn lựa chọn của bạn cho thấy bạn thích tự giải quyết vấn đề, giữ cuộc sống gọn gàng và chỉ giữ lại những gì thật sự cần. Giống xương rồng, bạn chịu được những giai đoạn khô hạn mà không than phiền, và khi đến lúc, bạn nở hoa rất đẹp, chỉ là không ồn ào.',
+      traits: ['Bạn coi trọng sự độc lập và tự quyết định cách mình sống.', 'Bạn thích sự tối giản: ít đồ, ít lời, nhiều hiệu quả.', 'Bạn bền bỉ trước áp lực và hiếm khi bỏ cuộc giữa chừng.'],
+      care: 'Gợi ý chăm sóc: đặt nơi nhiều nắng và tưới thưa, khoảng một đến hai tuần một lần.' },
+    B: { name: 'Hoa hướng dương', latin: 'Helianthus annuus', tag: 'Cứ hướng về phía mặt trời',
+      desc: 'Hoa hướng dương hợp với những người mang năng lượng tích cực vào mọi nơi họ đến. Bạn thích gặp gỡ, thích kể chuyện và dễ truyền cảm hứng cho người xung quanh. Khi gặp khó khăn, bạn chọn nhìn về phía có ánh sáng trước, giống cách hoa luôn xoay theo mặt trời. Một ngày yên ắng quá lâu làm bạn hơi chán, và đó là lý do bạn luôn tìm điều mới để bắt đầu.',
+      traits: ['Bạn lạc quan và lan tỏa năng lượng cho cả nhóm.', 'Bạn hào hứng với trải nghiệm mới và các cuộc gặp gỡ.', 'Bạn dễ kết nối, nói chuyện tự nhiên với nhiều kiểu người.'],
+      care: 'Gợi ý chăm sóc: cần nắng đầy đủ, đất luôn hơi ẩm và một chỗ trồng thoáng rộng.' },
+    C: { name: 'Lan hồ điệp', latin: 'Phalaenopsis', tag: 'Đẹp nằm ở từng chi tiết',
+      desc: 'Lan hồ điệp đại diện cho sự tinh tế và tỉ mỉ. Các lựa chọn của bạn cho thấy bạn thích mọi thứ ngăn nắp, làm việc có kế hoạch và để ý những chi tiết người khác bỏ qua. Bạn đặt tiêu chuẩn cao cho chính mình, và chính điều đó khiến kết quả của bạn luôn đáng tin. Giống lan, bạn tỏa sáng nhất khi có môi trường phù hợp và đủ thời gian chuẩn bị.',
+      traits: ['Bạn chú ý chi tiết và muốn mọi việc được hoàn thành chỉn chu.', 'Bạn thích kế hoạch rõ ràng và nhịp làm việc đều đặn.', 'Bạn tinh tế trong thẩm mỹ và cách giao tiếp.'],
+      care: 'Gợi ý chăm sóc: ánh sáng gián tiếp, tưới khi rễ chuyển sang màu bạc và tránh để nước đọng ở gốc.' },
+    D: { name: 'Bonsai tùng', latin: 'Pinus bonsai', tag: 'Chậm mà chắc, càng lâu càng vững',
+      desc: 'Bonsai là loài cây của sự kiên nhẫn. Bạn chọn bình tĩnh thay vì vội vã, thích lắng nghe trước khi nói và tin rằng điều tốt cần thời gian. Mỗi ngày bạn làm một chút, đều đặn, và sau nhiều năm kết quả khiến người khác ngạc nhiên. Bạn là người mà bạn bè tìm đến khi cần một lời khuyên điềm tĩnh.',
+      traits: ['Bạn kiên nhẫn và đủ bình tĩnh để làm việc lâu dài.', 'Bạn là người lắng nghe, hay được nhờ tư vấn.', 'Bạn tìm sự cân bằng và thích không gian yên tĩnh.'],
+      care: 'Gợi ý chăm sóc: tưới đều tay, cắt tỉa nhẹ định kỳ và đặt nơi có ánh sáng dịu.' }
+  };
+  var LETTERS = ['A', 'B', 'C', 'D'];
+
+  /* ---------- Hình minh họa cây (SVG) ---------- */
+  function svg(inner, w) {
+    return '<svg class="plant" viewBox="0 0 200 230" width="' + w + '" aria-hidden="true" focusable="false">' + inner + '</svg>';
+  }
+  var POT = '<path d="M64 176h72l-7 38a8 8 0 0 1-8 6H79a8 8 0 0 1-8-6z" fill="var(--p-pot)"/>' +
+    '<rect x="58" y="168" width="84" height="13" rx="5" fill="var(--p-pot)"/>' +
+    '<rect x="58" y="168" width="84" height="5" rx="3" fill="#000" opacity=".1"/>';
+
+  function cactus(w) {
+    var s = '';
+    s += '<path d="M84 132H68a8 8 0 0 1-8-8V102" stroke="var(--p-leaf)" stroke-width="16" stroke-linecap="round" fill="none"/>';
+    s += '<path d="M116 118h16a8 8 0 0 0 8-8V90" stroke="var(--p-leaf)" stroke-width="16" stroke-linecap="round" fill="none"/>';
+    s += '<rect x="82" y="74" width="36" height="110" rx="18" fill="var(--p-leaf)"/>';
+    s += '<path d="M92 84v90M100 78v96M108 84v90" stroke="var(--p-leaf-d)" stroke-width="2" opacity=".45" fill="none"/>';
+    s += '<g stroke="var(--p-petal)" stroke-width="1.6" stroke-linecap="round" opacity=".9"><path d="M94 100l-4-2M106 112l4-2M94 130l-4-2M106 150l4-2M100 90v-3"/></g>';
+    var pet = '';
+    for (var i = 0; i < 6; i++) { pet += '<ellipse cx="100" cy="62" rx="4.5" ry="8" fill="var(--p-pink)" transform="rotate(' + (i * 60) + ' 100 70)"/>'; }
+    s += pet + '<circle cx="100" cy="70" r="4" fill="var(--p-sun)"/>';
+    return svg(s + POT, w);
+  }
+  function sunflower(w) {
+    var s = '<rect x="97" y="82" width="6" height="94" rx="3" fill="var(--p-leaf-d)"/>';
+    s += '<path d="M100 144C70 144 58 126 56 116c28-2 42 10 44 28z" fill="var(--p-leaf)"/>';
+    s += '<path d="M100 126c30 0 42-18 44-28-28-2-42 10-44 28z" fill="var(--p-leaf-d)"/>';
+    for (var i = 0; i < 14; i++) { s += '<ellipse cx="100" cy="36" rx="7.5" ry="17" fill="var(--p-sun)" transform="rotate(' + (i * 360 / 14) + ' 100 64)"/>'; }
+    for (var j = 0; j < 14; j++) { s += '<ellipse cx="100" cy="42" rx="6" ry="13" fill="var(--p-sun)" opacity=".8" transform="rotate(' + (j * 360 / 14 + 12) + ' 100 64)"/>'; }
+    s += '<circle cx="100" cy="64" r="19" fill="var(--p-brown)"/>';
+    s += '<g fill="var(--p-sun)" opacity=".55"><circle cx="94" cy="58" r="1.6"/><circle cx="104" cy="56" r="1.6"/><circle cx="108" cy="66" r="1.6"/><circle cx="98" cy="70" r="1.6"/><circle cx="90" cy="67" r="1.6"/><circle cx="100" cy="63" r="1.6"/></g>';
+    return svg(s + POT, w);
+  }
+  function orchidFlower(x, y, k) {
+    var p = '';
+    for (var i = 0; i < 5; i++) { p += '<ellipse cx="0" cy="-11" rx="9" ry="13" fill="var(--p-petal)" stroke="var(--p-petal2)" stroke-width="1" transform="rotate(' + (i * 72) + ')"/>'; }
+    return '<g transform="translate(' + x + ' ' + y + ') scale(' + k + ')">' + p +
+      '<ellipse cx="0" cy="3" rx="5" ry="6.5" fill="var(--p-petal2)"/><circle cx="0" cy="-2" r="2.5" fill="var(--p-sun)"/></g>';
+  }
+  function orchid(w) {
+    var s = '<ellipse cx="68" cy="164" rx="36" ry="10" transform="rotate(-14 68 164)" fill="var(--p-leaf)"/>';
+    s += '<ellipse cx="134" cy="166" rx="36" ry="10" transform="rotate(12 134 166)" fill="var(--p-leaf-d)"/>';
+    s += '<path d="M100 176C96 130 104 84 138 46" stroke="var(--p-leaf-d)" stroke-width="4" stroke-linecap="round" fill="none"/>';
+    s += '<circle cx="146" cy="38" r="4" fill="var(--p-petal2)"/><circle cx="152" cy="32" r="2.6" fill="var(--p-petal2)"/>';
+    s += orchidFlower(128, 56, .82) + orchidFlower(108, 92, .95) + orchidFlower(94, 128, 1);
+    return svg(s + POT, w);
+  }
+  function bonsai(w) {
+    var s = '<path d="M100 190C96 165 112 150 100 130C92 118 78 112 74 98" stroke="var(--p-brown)" stroke-width="10" stroke-linecap="round" fill="none"/>';
+    s += '<path d="M104 148C122 144 134 132 142 114" stroke="var(--p-brown)" stroke-width="6" stroke-linecap="round" fill="none"/>';
+    s += '<path d="M98 126C92 108 98 92 100 80" stroke="var(--p-brown)" stroke-width="6" stroke-linecap="round" fill="none"/>';
+    s += '<ellipse cx="72" cy="92" rx="36" ry="20" fill="var(--p-leaf-d)"/><ellipse cx="140" cy="106" rx="32" ry="18" fill="var(--p-leaf-d)"/><ellipse cx="102" cy="66" rx="38" ry="22" fill="var(--p-leaf-d)"/>';
+    s += '<ellipse cx="68" cy="86" rx="26" ry="12" fill="var(--p-leaf)"/><ellipse cx="136" cy="100" rx="22" ry="10" fill="var(--p-leaf)"/><ellipse cx="98" cy="60" rx="28" ry="13" fill="var(--p-leaf)"/>';
+    s += '<ellipse cx="92" cy="54" rx="14" ry="5" fill="var(--p-leaf-l)" opacity=".7"/>';
+    s += '<rect x="52" y="188" width="96" height="22" rx="5" fill="var(--p-pot)"/><rect x="66" y="208" width="14" height="9" fill="var(--p-pot)"/><rect x="120" y="208" width="14" height="9" fill="var(--p-pot)"/>';
+    s += '<rect x="56" y="186" width="88" height="6" rx="3" fill="var(--p-soil)"/>';
+    return svg(s, w);
+  }
+  var DRAW = { A: cactus, B: sunflower, C: orchid, D: bonsai };
+
+  function icon(name) {
+    return '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[name] + '</svg>';
+  }
+
+  /* ---------- Trạng thái ---------- */
+  var N = QUESTIONS.length, idx = 0, answers = [], locked = false, userName = '';
+
+  function byId(id) {
+    return document.getElementById(id);
+  }
+
+  function runAnimation(element, keyframes, duration, onFinish) {
+    if (reducedMotion || typeof element.animate !== 'function') {
+      if (onFinish) { onFinish(); }
+      return;
+    }
+    var animation = element.animate(keyframes, { duration: duration, easing: 'ease' });
+    if (onFinish) { animation.onfinish = onFinish; }
+  }
+
+  function showScreen(element) {
+    var screens = document.querySelectorAll('.screen'), current = null;
+    screens.forEach(function (screen) {
+      if (screen !== element && getComputedStyle(screen).display !== 'none') { current = screen; }
+    });
+    window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
+    if (!current) {
+      element.style.display = 'block';
+      runAnimation(element, [{ opacity: 0 }, { opacity: 1 }], 380);
+      return;
+    }
+    runAnimation(current, [{ opacity: 1 }, { opacity: 0 }], 220, function () {
+      current.style.display = 'none';
+      element.style.display = 'block';
+      runAnimation(element, [{ opacity: 0 }, { opacity: 1 }], 380);
+    });
+  }
+
+  function setProgress(i) {
+    byId('fill').style.width = (i / N * 100) + '%';
+  }
+
+  function fillQuestion(i) {
+    var q = QUESTIONS[i], html = '';
+    byId('qnum').textContent = 'Câu ' + (i + 1) + ' / ' + N;
+    byId('qicon').innerHTML = icon(q.i);
+    byId('qtext').textContent = q.q;
+    q.o.forEach(function (text, k) {
+      var letter = LETTERS[k];
+      html += '<button type="button" class="opt' + (answers[i] === letter ? ' picked' : '') + '" data-k="' + letter + '"><span class="badge">' + letter + '</span><span class="otext">' + text + '</span></button>';
+    });
+    byId('opts').innerHTML = html;
+    byId('back').disabled = i === 0;
+    setProgress(i);
+  }
+
+  function slideTo(i) {
+    var body = byId('qbody');
+    runAnimation(body, [
+      { opacity: 1, transform: 'translateX(0)' },
+      { opacity: 0, transform: 'translateX(-30px)' }
+    ], 170, function () {
+      fillQuestion(i);
+      runAnimation(body, [
+        { opacity: 0, transform: 'translateX(30px)' },
+        { opacity: 1, transform: 'translateX(0)' }
+      ], 260, function () { locked = false; });
+    });
+  }
+
+  function burst(button, event) {
+    var rect = button.getBoundingClientRect();
+    var x = event && event.clientX ? event.clientX - rect.left : rect.width / 2;
+    var y = event && event.clientY ? event.clientY - rect.top : rect.height / 2;
+    for (var i = 0; i < 8; i++) {
+      var ang = Math.random() * Math.PI * 2, d = 30 + Math.random() * 50;
+      var particle = document.createElement('span');
+      particle.className = 'pt';
+      particle.style.left = x + 'px';
+      particle.style.top = y + 'px';
+      button.appendChild(particle);
+      runAnimation(particle, [
+        { transform: 'translate(0, 0) rotate(0deg)', opacity: 1 },
+        { transform: 'translate(' + Math.cos(ang) * d + 'px, ' + Math.sin(ang) * d + 'px) rotate(' + Math.round(Math.random() * 180) + 'deg)', opacity: 0 }
+      ], 540, function () { particle.remove(); });
+      if (reducedMotion || typeof particle.animate !== 'function') { particle.remove(); }
+    }
+  }
+
+  function choose(letter, button, event) {
+    if (locked) { return; }
+    locked = true;
+    answers[idx] = letter;
+    button.classList.add('picked');
+    burst(button, event);
+    setProgress(idx + 1);
+    setTimeout(function () {
+      if (idx < N - 1) { idx++; slideTo(idx); } else { finish(); }
+    }, 480);
+  }
+
+  function countUp(element, pct, delay) {
+    setTimeout(function () {
+      if (reducedMotion) {
+        element.textContent = Math.round(pct) + '%';
+        return;
+      }
+      var start = performance.now();
+      function step(now) {
+        var progress = Math.min((now - start) / 750, 1);
+        element.textContent = Math.round(pct * progress) + '%';
+        if (progress < 1) { requestAnimationFrame(step); }
+      }
+      requestAnimationFrame(step);
+    }, delay);
+  }
+
+  function finish() {
+    var counts = { A: 0, B: 0, C: 0, D: 0 }, max = 0, win = 'A', i;
+    answers.forEach(function (letter) { counts[letter]++; });
+    LETTERS.forEach(function (letter) { if (counts[letter] > max) { max = counts[letter]; } });
+    for (i = answers.length - 1; i >= 0; i--) { if (counts[answers[i]] === max) { win = answers[i]; break; } }
+    var P = PLANTS[win];
+
+    byId('r-hello').textContent = userName ? userName + ', loài cây hợp với bạn nhất là' : 'Loài cây phù hợp nhất với bạn';
+    byId('r-name').textContent = P.name;
+    byId('r-latin').textContent = P.latin;
+    byId('r-tag').textContent = '“' + P.tag + '”';
+    byId('r-plant').innerHTML = DRAW[win](210);
+    byId('r-desc').textContent = P.desc;
+    byId('r-traits').innerHTML = P.traits.map(function (trait) { return '<li>' + trait + '</li>'; }).join('');
+    byId('r-care').textContent = P.care;
+    byId('r-top').innerHTML = 'Đáp án bạn chọn nhiều nhất là <strong>' + win + '</strong> (' + counts[win] + '/' + N + ' câu), nên kết quả của bạn là <strong>' + P.name + '</strong>.';
+
+    var bars = '';
+    LETTERS.forEach(function (letter) {
+      var pct = counts[letter] / N * 100;
+      bars += '<div class="bar' + (letter === win ? ' win' : '') + '"><span class="lbl"><b>' + letter + '</b>' + PLANTS[letter].name + '</span>' +
+        '<span class="tr"><span class="bar-fill" style="display:block" data-pct="' + pct + '"></span></span><span class="pc">0%</span></div>';
+    });
+    byId('bars').innerHTML = bars;
+
+    var rest = LETTERS.filter(function (letter) { return letter !== win && counts[letter] > 0; }).sort(function (a, b) { return counts[b] - counts[a]; });
+    var second = byId('r-second');
+    if (rest.length) {
+      second.textContent = 'Loài cây gần với bạn thứ hai: ' + PLANTS[rest[0]].name + ' (' + counts[rest[0]] + '/' + N + ' câu).';
+      second.style.display = '';
+    } else { second.style.display = 'none'; }
+
+    showScreen(byId('screen-result'));
+    setTimeout(function () {
+      document.querySelectorAll('#bars .bar').forEach(function (bar, k) {
+        var fill = bar.querySelector('.bar-fill'), pct = parseFloat(fill.getAttribute('data-pct'));
+        fill.style.transitionDelay = (reducedMotion ? 0 : k * 130) + 'ms';
+        requestAnimationFrame(function () { fill.style.width = pct + '%'; });
+        countUp(bar.querySelector('.pc'), pct, reducedMotion ? 0 : k * 130);
+      });
+    }, 500);
+    locked = false;
+  }
+
+  function startQuiz() {
+    userName = byId('name').value.trim().slice(0, 24);
+    idx = 0; answers = []; locked = false;
+    byId('fill').style.width = '0';
+    fillQuestion(0);
+    byId('qbody').style.opacity = '1';
+    byId('qbody').style.transform = 'none';
+    showScreen(byId('screen-quiz'));
+  }
+
+  /* ---------- Khởi tạo ---------- */
+  var preview = '';
+  LETTERS.forEach(function (letter) {
+    preview += '<figure>' + DRAW[letter](110) + '<figcaption>' + PLANTS[letter].name + '</figcaption></figure>';
+  });
+  byId('preview').innerHTML = preview;
+
+  var specks = '';
+  for (var i = 0; i < 18; i++) {
+    var size = 3 + Math.random() * 5;
+    specks += '<span class="speck" style="left:' + (Math.random() * 100).toFixed(1) + '%;top:' + (Math.random() * 100).toFixed(1) + '%;width:' + size.toFixed(1) + 'px;height:' + size.toFixed(1) + 'px;animation-delay:-' + (Math.random() * 9).toFixed(1) + 's"></span>';
+  }
+  document.querySelector('.deco').insertAdjacentHTML('beforeend', specks);
+
+  byId('btn-start').addEventListener('click', startQuiz);
+  byId('name').addEventListener('keydown', function (event) { if (event.key === 'Enter') { startQuiz(); } });
+  byId('btn-again').addEventListener('click', startQuiz);
+  byId('opts').addEventListener('click', function (event) {
+    var button = event.target.closest('.opt');
+    if (button) { choose(button.getAttribute('data-k'), button, event); }
+  });
+  byId('back').addEventListener('click', function () {
+      if (locked || idx === 0) { return; }
+      locked = true; idx--; slideTo(idx);
+    });
+
+  document.addEventListener('keydown', function (event) {
+    if (getComputedStyle(byId('screen-quiz')).display === 'none' || locked || event.ctrlKey || event.metaKey || event.altKey) { return; }
+    var key = (event.key || '').toUpperCase();
+    if (key.length === 1 && LETTERS.indexOf(key) > -1) {
+      var button = document.querySelector('.opt[data-k="' + key + '"]');
+      if (button) { button.click(); }
+    }
+  });
+})();
+</script>
+</body>
+</html>
