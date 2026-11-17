@@ -18,18 +18,19 @@ from Services.PasswordService import PasswordService
 from Services.RateLimiter import auth_rate_limiter
 from Services.Register import RegisterService, RegistrationError
 from Services.SessionService import SessionService
+from Schemas.ResponseSchemas import RegisterResponse, LoginResponse, TokenResponse, MessageResponse
 
 
 class AuthController:
     def __init__(self):
         self.router = APIRouter(prefix="/auth", tags=["Authentication"])
-        self.router.add_api_route("/register", self.register, methods=["POST"], status_code=201)
-        self.router.add_api_route("/login", self.login, methods=["POST"])
-        self.router.add_api_route("/refresh", self.refresh, methods=["POST"])
-        self.router.add_api_route("/logout", self.logout, methods=["POST"])
-        self.router.add_api_route("/forgot-password", self.forgot_password, methods=["POST"])
-        self.router.add_api_route("/reset-password", self.reset_password, methods=["POST"])
-        self.router.add_api_route("/change-password", self.change_password, methods=["POST"])
+        self.router.add_api_route("/register", self.register, methods=["POST"], status_code=201, response_model=RegisterResponse)
+        self.router.add_api_route("/login", self.login, methods=["POST"], response_model=LoginResponse)
+        self.router.add_api_route("/refresh", self.refresh, methods=["POST"], response_model=TokenResponse)
+        self.router.add_api_route("/logout", self.logout, methods=["POST"], response_model=MessageResponse)
+        self.router.add_api_route("/forgot-password", self.forgot_password, methods=["POST"], response_model=MessageResponse)
+        self.router.add_api_route("/reset-password", self.reset_password, methods=["POST"], response_model=MessageResponse)
+        self.router.add_api_route("/change-password", self.change_password, methods=["POST"], response_model=MessageResponse)
 
     @staticmethod
     def _raise_http(exc: AuthError | RegistrationError) -> None:

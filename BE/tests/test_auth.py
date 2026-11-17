@@ -1,35 +1,9 @@
 """Run with: py -m pytest BE/tests -q (after installing pytest httpx)."""
-import os
-import sys
-from pathlib import Path
-import tempfile
 from unittest.mock import patch
-
-import pytest
-
-# A private test database: never point tests at your local users.db.
-TEST_DIR = tempfile.TemporaryDirectory()
-os.environ["DATABASE_URL"] = f"sqlite:///{Path(TEST_DIR.name, 'auth-test.db').as_posix()}"
-os.environ["JWT_SECRET_KEY"] = "test-secret-not-for-production-" + "x" * 40
-os.environ["JWT_ALGORITHM"] = "HS256"
-os.environ["ACCESS_TOKEN_EXPIRE_MINUTES"] = "30"
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-
-from fastapi.testclient import TestClient  # noqa: E402
-from main import app  # noqa: E402
-from database import SessionLocal, engine  # noqa: E402
-from Models.Users import User  # noqa: E402
-
-
-@pytest.fixture(scope="session", autouse=True)
-def cleanup_test_database():
-    """Close SQLite connections before deleting the temporary DB on Windows."""
-    yield
-    engine.dispose()
-    TEST_DIR.cleanup()
-
-
+from fastapi.testclient import TestClient
+from main import app
+from database import SessionLocal, engine
+from Models.Users import User
 
 def test_auth_workflow():
     with TestClient(app) as client:
