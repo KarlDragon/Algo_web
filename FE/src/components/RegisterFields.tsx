@@ -8,13 +8,14 @@ function RegisterFields() {
           autoComplete="username"
           id="username"
           maxLength={50}
+          minLength={3}
           name="username"
-          pattern="(?=.*[A-Za-z])(?=.*[0-9]).*"
+          pattern="[A-Za-z0-9_]{3,50}"
           required
-          title="Use at least one letter and one number."
+          title="Tên đăng nhập gồm 3–50 ký tự: chữ cái không dấu, số hoặc dấu gạch dưới."
         />
         <span className="field-hint" id="username-hint">
-          Phải có 1 chữ và 1 số.
+          Từ 3–50 ký tự; chỉ dùng chữ cái không dấu, số và dấu gạch dưới.
         </span>
       </div>
 

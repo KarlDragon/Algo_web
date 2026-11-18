@@ -4,11 +4,13 @@ export type User = {
   id: number
   username: string
   email: string
+  role?: 'USER' | 'ADMIN'
 }
 
 export type LoginRequest = {
   login: string
   password: string
+  remember_me: boolean
 }
 
 export type RegisterRequest = {
@@ -20,6 +22,8 @@ export type RegisterRequest = {
 export type LoginResponse = {
   message: string
   access_token: string
+  refresh_token: string
+  expires_in: number
   token_type: string
   user: User
 }

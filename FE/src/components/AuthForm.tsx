@@ -35,6 +35,7 @@ function AuthForm({
         data: {
           login: String(formData.get('login') ?? ''),
           password: String(formData.get('password') ?? ''),
+          remember_me: formData.get('remember_me') === 'on',
         },
       })
       return
@@ -64,7 +65,7 @@ function AuthForm({
           </p>
         </header>
 
-        <div className="auth-tabs" role="group" aria-label="Account action">
+        <div className="auth-tabs" role="group" aria-label="Tùy chọn tài khoản">
           <button
             aria-pressed={!isRegistering}
             className={!isRegistering ? 'auth-tab is-active' : 'auth-tab'}
@@ -107,7 +108,7 @@ function AuthForm({
           <div className="form-status is-success" role="status">
             <p>{status.message}</p>
             <p>
-              Signed in as <strong>{status.user.username}</strong> (
+              Đang đăng nhập với <strong>{status.user.username}</strong> (
               {status.user.email})
             </p>
           </div>
@@ -116,7 +117,7 @@ function AuthForm({
         {status?.kind === 'register-success' && (
           <div className="form-status is-success" role="status">
             <p>
-              Account created for <strong>{status.user.username}</strong> (
+              Đã tạo tài khoản <strong>{status.user.username}</strong> (
               {status.user.email}).
             </p>
             <button
@@ -124,7 +125,7 @@ function AuthForm({
               onClick={() => onModeChange('login')}
               type="button"
             >
-              Continue to log in
+              Tiếp tục đăng nhập
             </button>
           </div>
         )}

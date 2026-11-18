@@ -1,17 +1,17 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import type { AuthStatus, AuthSubmission } from '../models/auth'
 import { login, register } from '../services/authService'
 
 function getSubmissionError(error: unknown): string {
   if (error instanceof TypeError) {
-    return 'Could not connect to the server. Check that the backend is running and try again.'
+    return 'Không thể kết nối máy chủ. Hãy kiểm tra backend đang chạy rồi thử lại.'
   }
 
   if (error instanceof Error) {
     return error.message
   }
 
-  return 'Something went wrong. Please try again.'
+  return 'Đã xảy ra lỗi. Vui lòng thử lại.'
 }
 
 export function useAuth() {
@@ -42,9 +42,9 @@ export function useAuth() {
     }
   }
 
-  function clearStatus() {
+  const clearStatus = useCallback(() => {
     setStatus(null)
-  }
+  }, [])
 
   return { status, isSubmitting, submit, clearStatus }
 }

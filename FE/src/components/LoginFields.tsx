@@ -10,6 +10,10 @@ function LoginFields() {
           required
         />
       </div>
+      <label className="remember-field">
+        <input name="remember_me" type="checkbox" />
+        Ghi nhớ đăng nhập trên thiết bị này
+      </label>
 
       <div className="form-field">
         <label htmlFor="login-password">Mật khẩu</label>

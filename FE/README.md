@@ -1,6 +1,6 @@
-# Algo Web frontend
+# AlgoVisual frontend
 
-React + TypeScript account forms for the FastAPI authentication endpoints.
+React + TypeScript + Vite frontend for the FastAPI backend.
 
 ## Run locally
 
@@ -17,16 +17,27 @@ npm install
 npm run dev
 ```
 
-The Vite development server proxies `/api/*` to `http://127.0.0.1:8000/*`.
-Change the proxy target in `vite.config.ts` if the backend uses another address.
+Vite proxies `/api/*` to `http://127.0.0.1:8000/*` and strips the `/api`
+prefix. Change the proxy target in `vite.config.ts` when the backend uses
+another address.
 
-## Authentication API
+## Backend integration
 
-- `POST /register` sends `{ "username", "password", "email" }` and expects
-  `{ "id", "username", "email" }`.
-- `POST /login` sends `{ "login", "password" }`, where `login` is a username or
-  email. It expects `{ "message", "access_token", "token_type", "user" }`.
+The frontend calls the implemented FastAPI routes using JSON snake_case fields:
 
-The registration form mirrors the backend's username, password, and email
-constraints. Login errors and registration errors returned by FastAPI are shown
-in the form.
+- Authentication: `POST /auth/register`, `/auth/login`, `/auth/refresh`, and
+  `/auth/logout`
+- Session/profile: `GET /users/me`, `PATCH /users/me`
+- Home and content: `GET /home`, `/categories`, `/algorithms`, and
+  `/algorithms/{slug}`
+- Search and saved algorithms: `GET /search`, `/search/suggestions`, and
+  `/users/me/favorites`
+- Learning interactions: algorithm progress, favorites, comments, and ratings
+
+Access and rotating refresh tokens are saved in browser storage. Protected API
+requests include the access token; on `401`, the client attempts one refresh and
+retries the original request. If refresh fails, the session is cleared and the
+login/register screen is shown.
+
+The simulator runs supported sorting, searching, BFS, and DFS visualizations in
+the browser. It does not call a simulation endpoint.
