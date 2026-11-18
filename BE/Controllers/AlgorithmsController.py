@@ -7,7 +7,7 @@ from Schemas.ContentSchemas import AlgorithmInput,CategoryInput,BannerInput,Prog
 from Services.AuthDependencies import get_current_user,require_admin
 from Services.AlgorithmService import AlgorithmService
 from Services.InteractionService import InteractionService
-from Schemas.ResponseSchemas import (AlgorithmPage, AlgorithmSummary, AlgorithmDetail, CategoryResponse, BannerResponse, HomeResponse, ProgressResponse, MessageResponse)
+from Schemas.ResponseSchemas import (AlgorithmPage, AlgorithmSummary, AlgorithmDetail, CategoryResponse, BannerResponse, HomeResponse, ProgressResponse, MessageResponse, CompareResponse)
 
 router=APIRouter(tags=['Thuật toán và danh mục'])
 
@@ -35,6 +35,11 @@ def list_algorithms(page:int=Query(1,ge=1),page_size:int=Query(20,ge=1,le=100),
                     user:User=Depends(get_current_user),db:Session=Depends(get_db)):
     return AlgorithmService(db).list_algorithms(page,page_size,category_id,difficulty,sort)
 
+@router.get('/algorithms/compare',response_model=CompareResponse)
+def compare_algorithms(ids:str=Query(min_length=1,max_length=1000),
+                       user:User=Depends(get_current_user),db:Session=Depends(get_db)):
+    return AlgorithmService(db).compare(ids)
+
 @router.post('/algorithms',status_code=201,response_model=AlgorithmDetail)
 def create_algorithm(data:AlgorithmInput,admin:User=Depends(require_admin),db:Session=Depends(get_db)):
     return AlgorithmService(db).save_algorithm(data)
@@ -42,6 +47,10 @@ def create_algorithm(data:AlgorithmInput,admin:User=Depends(require_admin),db:Se
 @router.get('/algorithms/{slug_or_id}',response_model=AlgorithmDetail)
 def get_algorithm(slug_or_id:str,user:User=Depends(get_current_user),db:Session=Depends(get_db)):
     return AlgorithmService(db).get_algorithm(slug_or_id)
+
+@router.post('/algorithms/{algorithm_id}/view',response_model=ProgressResponse)
+def view_algorithm(algorithm_id:int,user:User=Depends(get_current_user),db:Session=Depends(get_db)):
+    return InteractionService(db).touch_view(algorithm_id,user.id)
 
 @router.put('/algorithms/{algorithm_id}',response_model=AlgorithmDetail)
 def update_algorithm(algorithm_id:int,data:AlgorithmInput,admin:User=Depends(require_admin),db:Session=Depends(get_db)):

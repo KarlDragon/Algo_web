@@ -3,6 +3,8 @@ import type {
   AlgorithmSummary,
   Category,
   Comment,
+  CompareItem,
+  HistoryItem,
   HomeData,
   LearningProgress,
   Page,
@@ -63,8 +65,30 @@ export const getFavorites = (page = 1) =>
     `/users/me/favorites${queryString({ page, page_size: 100 })}`,
   )
 
+export function getHistory(options: {
+  page?: number
+  pageSize?: number
+  status?: 'IN_PROGRESS' | 'COMPLETED'
+} = {}) {
+  return apiRequest<Page<HistoryItem>>(
+    `/users/me/history${queryString({
+      page: options.page ?? 1,
+      page_size: options.pageSize ?? 20,
+      status: options.status,
+    })}`,
+  )
+}
+
+export const compareAlgorithms = (ids: string[]) =>
+  apiRequest<{ algorithms: CompareItem[] }>(
+    `/algorithms/compare?ids=${ids.map(encodeURIComponent).join(',')}`,
+  )
+
 export const getProgress = (id: number) =>
   apiRequest<LearningProgress>(`/algorithms/${id}/progress`)
+
+export const viewAlgorithm = (id: number) =>
+  apiRequest<LearningProgress>(`/algorithms/${id}/view`, { method: 'POST' })
 
 export const updateProgress = (
   id: number,

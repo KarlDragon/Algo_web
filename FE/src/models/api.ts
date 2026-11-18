@@ -113,6 +113,19 @@ export type LearningProgress = {
   completed_at: string | null
 }
 
+export type HistoryItem = {
+  algorithm: AlgorithmSummary
+  status: LearningProgress['status']
+  progress_percent: number
+  last_viewed_at: string
+  completed_at: string | null
+}
+
+export type CompareItem = AlgorithmSummary & {
+  complexity: AlgorithmDetail['complexity']
+  tags: AlgorithmDetail['tags']
+}
+
 export type AuthTokens = {
   access_token: string
   refresh_token: string

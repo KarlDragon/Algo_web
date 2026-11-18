@@ -214,3 +214,25 @@ class ProgressResponse(BaseModel):
     progress_percent: int = Field(ge=0, le=100)
     last_viewed_at: datetime | None
     completed_at: datetime | None
+
+
+class HistoryItem(BaseModel):
+    algorithm: AlgorithmSummary
+    status: Literal['NOT_STARTED', 'IN_PROGRESS', 'COMPLETED']
+    progress_percent: int = Field(ge=0, le=100)
+    last_viewed_at: datetime
+    completed_at: datetime | None
+
+
+class HistoryPage(BaseModel):
+    data: list[HistoryItem]
+    meta: PageMeta
+
+
+class CompareItem(AlgorithmSummary):
+    complexity: ComplexityResponse
+    tags: list[TagResponse]
+
+
+class CompareResponse(BaseModel):
+    algorithms: list[CompareItem]

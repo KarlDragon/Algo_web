@@ -1,5 +1,6 @@
 from sqlalchemy import func, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
+from Models.Algorithms import Algorithm
 from Models.Interaction import Comment, Rating, Favorite, LearningProgress
 
 
@@ -51,3 +52,19 @@ class InteractionRepository:
 
     def progress(self,user_id,algorithm_id):
         return self.db.scalar(select(LearningProgress).where(LearningProgress.user_id==user_id,LearningProgress.algorithm_id==algorithm_id))
+
+    def history(self,user_id,page,page_size,status=None):
+        stmt=(select(LearningProgress,Algorithm)
+              .join(Algorithm,Algorithm.id==LearningProgress.algorithm_id)
+              .where(LearningProgress.user_id==user_id,
+                     LearningProgress.last_viewed_at.is_not(None),
+                     Algorithm.is_deleted.is_(False)))
+        if status is not None:
+            stmt=stmt.where(LearningProgress.status==status)
+        total=self.db.scalar(select(func.count()).select_from(stmt.order_by(None).subquery())) or 0
+        rows=self.db.execute(
+            stmt.options(selectinload(Algorithm.category))
+                .order_by(LearningProgress.last_viewed_at.desc(),LearningProgress.id.desc())
+                .offset((page-1)*page_size).limit(page_size)
+        ).all()
+        return rows,total

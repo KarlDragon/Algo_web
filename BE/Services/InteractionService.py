@@ -123,3 +123,37 @@ class InteractionService:
         else:obj.completed_at=None
         self.db.commit()
         return self.get_progress(algorithm_id,user_id)
+
+    def touch_view(self,algorithm_id,user_id):
+        self._algorithm(algorithm_id)
+        obj=self.repo.progress(user_id,algorithm_id)
+        now=now_utc()
+        if obj is None:
+            obj=LearningProgress(
+                user_id=user_id,algorithm_id=algorithm_id,status='IN_PROGRESS',
+                progress_percent=10,last_viewed_at=now,
+            )
+            self.db.add(obj)
+        else:
+            obj.last_viewed_at=now
+        self.db.commit()
+        return self.get_progress(algorithm_id,user_id)
+
+    def history(self,user_id,page,page_size,status=None):
+        rows,total=self.repo.history(user_id,page,page_size,status)
+        stats=self.repo.bulk_rating_stats([algorithm.id for _,algorithm in rows])
+        return {
+            'data':[
+                {
+                    'algorithm':algorithm_out(
+                        algorithm,self.repo,rating=stats.get(algorithm.id,(0.0,0))
+                    ),
+                    'status':progress.status,
+                    'progress_percent':progress.progress_percent,
+                    'last_viewed_at':progress.last_viewed_at,
+                    'completed_at':progress.completed_at,
+                }
+                for progress,algorithm in rows
+            ],
+            'meta':{'page':page,'page_size':page_size,'total':total},
+        }

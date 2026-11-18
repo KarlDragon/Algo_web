@@ -103,6 +103,10 @@ export default function AlgorithmDetail({ algorithm, isFavorite, onFavorite }: P
           {isFavorite ? '★ Đã lưu' : '☆ Lưu yêu thích'}
         </button>
       </section>
+      <div className="detail-shortcuts">
+        <a className="secondary-button" href={`/algorithms/${encodeURIComponent(algorithm.slug)}/quiz`}>Làm quiz</a>
+        <a className="secondary-button" href={`/compare?ids=${encodeURIComponent(algorithm.slug)}`}>So sánh thuật toán</a>
+      </div>
 
       {notice && <p className="inline-notice" role="status">{notice}</p>}
 

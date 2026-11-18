@@ -12,6 +12,10 @@ from Services.HomeCache import invalidate as invalidate_home, get_or_build
 
 
 class AlgorithmService:
+    RESERVED_CATEGORY_SLUGS={
+        'algorithm','algorithms','search','favorites','profile','history','compare','quiz'
+    }
+
     def __init__(self,db:Session):
         self.db=db
         self.repo=AlgorithmRepository(db)
@@ -32,6 +36,8 @@ class AlgorithmService:
         return [category_out(c,int(count)) for c,count in rows]
 
     def create_category(self,data):
+        if data.slug in self.RESERVED_CATEGORY_SLUGS:
+            raise HTTPException(400,'Slug danh mục bị trùng với đường dẫn hệ thống')
         if self.repo.category_slug_exists(data.slug):raise HTTPException(409,'Slug danh mục đã tồn tại')
         c=Category(**data.model_dump())
         self.db.add(c)
@@ -44,6 +50,8 @@ class AlgorithmService:
     def update_category(self,id,data):
         c=self.repo.category_by_id(id)
         if c is None:raise HTTPException(404,'Không tìm thấy danh mục')
+        if data.slug in self.RESERVED_CATEGORY_SLUGS:
+            raise HTTPException(400,'Slug danh mục bị trùng với đường dẫn hệ thống')
         if self.repo.category_slug_exists(data.slug,id):raise HTTPException(409,'Slug danh mục đã tồn tại')
         for k,v in data.model_dump().items():setattr(c,k,v)
         try:self.db.commit();invalidate_home()
@@ -81,6 +89,37 @@ class AlgorithmService:
 
     def get_algorithm(self,identifier):
         return algorithm_out(self.require_algorithm(identifier),self.interactions,True)
+
+    def compare(self,ids_csv):
+        identifiers=[]
+        for value in ids_csv.split(','):
+            identifier=value.strip()
+            if identifier and identifier not in identifiers:
+                identifiers.append(identifier)
+        if not 2<=len(identifiers)<=4:
+            raise HTTPException(400,'Cần chọn từ 2 đến 4 thuật toán để so sánh')
+        algorithms=[]
+        for identifier in identifiers:
+            try:
+                algorithms.append(self.require_algorithm(identifier))
+            except HTTPException as exc:
+                if exc.status_code==404:
+                    raise HTTPException(404,f'Không tìm thấy thuật toán: {identifier}') from exc
+                raise
+        stats=self.interactions.bulk_rating_stats([algorithm.id for algorithm in algorithms])
+        result=[]
+        for algorithm in algorithms:
+            detailed=algorithm_out(
+                algorithm,self.interactions,True,
+                stats.get(algorithm.id,(0.0,0)),
+            )
+            result.append({
+                key:detailed[key] for key in (
+                    'id','slug','name','summary','category','category_id','difficulty',
+                    'avg_rating','rating_count','has_simulation','complexity','tags',
+                )
+            })
+        return {'algorithms':result}
 
     def _assign(self,alg,data):
         for k in ('slug','category_id','difficulty','name','summary','theory','pseudocode','has_simulation'):

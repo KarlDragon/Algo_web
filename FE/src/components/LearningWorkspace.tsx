@@ -13,11 +13,10 @@ import {
   getCategories,
   getFavorites,
   getHome,
-  getProgress,
   getSuggestions,
   searchAlgorithms,
   updateProfile,
-  updateProgress,
+  viewAlgorithm,
 } from '../services/contentService'
 import {
   ApiError,
@@ -26,6 +25,9 @@ import {
 } from '../services/apiClient'
 import { apiRequest } from '../services/apiClient'
 import AlgorithmDetail from './AlgorithmDetail'
+import HistoryPage from './HistoryPage'
+import ComparePage from './ComparePage'
+import QuizPage from './QuizPage'
 
 type Route =
   | { page: 'home' }
@@ -33,12 +35,31 @@ type Route =
   | { page: 'search'; query: string }
   | { page: 'favorites' }
   | { page: 'profile' }
+  | { page: 'history' }
+  | { page: 'compare'; ids: string[] }
+  | { page: 'quiz'; slug: string }
   | { page: 'algorithm'; slug: string }
   | { page: 'category'; slug: string }
 
 function resolveRoute(pathname: string, search: string, categories: Category[]): Route {
   const parts = pathname.split('/').filter(Boolean)
   if (parts.length === 0) return { page: 'home' }
+  if (
+    (parts[0] === 'algorithm' || parts[0] === 'algorithms') &&
+    parts[1] &&
+    parts[2] === 'quiz'
+  ) {
+    return { page: 'quiz', slug: decodeURIComponent(parts[1]) }
+  }
+  if (parts[0] === 'history') return { page: 'history' }
+  if (parts[0] === 'compare') {
+    const ids = (new URLSearchParams(search).get('ids') ?? '')
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean)
+      .slice(0, 4)
+    return { page: 'compare', ids }
+  }
   if (parts[0] === 'algorithm' && parts[1]) {
     return { page: 'algorithm', slug: decodeURIComponent(parts[1]) }
   }
@@ -293,8 +314,9 @@ export default function LearningWorkspace({ user, onLogout, onProfileChange }: W
     () => resolveRoute(window.location.pathname, window.location.search, categories),
     [categories],
   )
-  const routeSlug = route.page === 'algorithm' || route.page === 'category' ? route.slug : ''
+  const resolvedRouteSlug = route.page === 'algorithm' || route.page === 'category' || route.page === 'quiz' ? route.slug : ''
   const routeQuery = route.page === 'search' ? route.query : ''
+  const routeIds = route.page === 'compare' ? route.ids.join(',') : ''
   const [home, setHome] = useState<HomeData | null>(null)
   const [list, setList] = useState<Page<AlgorithmSummary> | null>(null)
   const [detail, setDetail] = useState<AlgorithmDetailData | null>(null)
@@ -311,6 +333,9 @@ export default function LearningWorkspace({ user, onLogout, onProfileChange }: W
     route.page === 'category' ? (categories.find((item) => item.slug === route.slug)?.name ?? 'Danh mục') :
     route.page === 'profile' ? 'Hồ sơ cá nhân' :
     route.page === 'favorites' ? 'Thuật toán yêu thích' :
+    route.page === 'history' ? 'Lịch sử học tập' :
+    route.page === 'compare' ? 'So sánh thuật toán' :
+    route.page === 'quiz' ? 'Làm quiz' :
     route.page === 'search' ? 'Kết quả tìm kiếm' : 'Thư viện thuật toán'
 
   useEffect(() => {
@@ -339,7 +364,10 @@ export default function LearningWorkspace({ user, onLogout, onProfileChange }: W
           const result = await getHome()
           if (active) setHome(result)
         } else if (route.page === 'algorithm') {
-          const result = await getAlgorithm(routeSlug)
+          const result = await getAlgorithm(resolvedRouteSlug)
+          if (active) setDetail(result)
+        } else if (route.page === 'quiz') {
+          const result = await getAlgorithm(resolvedRouteSlug)
           if (active) setDetail(result)
         } else if (route.page === 'favorites') {
           const result = await getFavorites()
@@ -351,11 +379,11 @@ export default function LearningWorkspace({ user, onLogout, onProfileChange }: W
             const result = await searchAlgorithms(routeQuery)
             if (active) setList(result)
           }
-        } else if (route.page === 'profile') {
+        } else if (route.page === 'profile' || route.page === 'history' || route.page === 'compare') {
           if (active) setList(null)
         } else {
           const category = route.page === 'category'
-            ? categories.find((item) => item.slug === routeSlug)
+            ? categories.find((item) => item.slug === resolvedRouteSlug)
             : undefined
           const result = await getAlgorithms({
             categoryId: category?.id,
@@ -372,17 +400,11 @@ export default function LearningWorkspace({ user, onLogout, onProfileChange }: W
     }
     void load()
     return () => { active = false }
-  }, [route.page, routeSlug, routeQuery, categories, difficulty, sort])
+  }, [route.page, resolvedRouteSlug, routeQuery, routeIds, categories, difficulty, sort])
 
   useEffect(() => {
     if (!detail) return
-    void getProgress(detail.id)
-      .then((progress) => {
-        if (progress.status === 'NOT_STARTED') {
-          return updateProgress(detail.id, 'IN_PROGRESS', 10)
-        }
-        return undefined
-      })
+    void viewAlgorithm(detail.id)
       .catch((cause: unknown) => setError(messageFrom(cause)))
   }, [detail])
 
@@ -448,6 +470,8 @@ export default function LearningWorkspace({ user, onLogout, onProfileChange }: W
             </a>
           ))}
           <a className={route.page === 'favorites' ? 'nav-active' : ''} href="/favorites">☆ <span>Yêu thích</span></a>
+          <a className={route.page === 'history' ? 'nav-active' : ''} href="/history">◷ <span>Lịch sử học</span></a>
+          <a className={route.page === 'compare' ? 'nav-active' : ''} href="/compare">⇄ <span>So sánh</span></a>
           <a className={route.page === 'profile' ? 'nav-active' : ''} href="/profile">◉ <span>Hồ sơ cá nhân</span></a>
         </nav>
         <div className="sidebar-bottom">
@@ -479,6 +503,9 @@ export default function LearningWorkspace({ user, onLogout, onProfileChange }: W
               onFavorite={() => void toggleFavorite(detail)}
             />
           )}
+          {!loading && route.page === 'quiz' && detail && <QuizPage algorithm={detail} />}
+          {!loading && route.page === 'history' && <HistoryPage />}
+          {!loading && route.page === 'compare' && <ComparePage ids={route.ids} />}
           {!loading && route.page === 'favorites' && (
             <section className="workspace-section"><div className="section-heading"><div><h2>Đã lưu để học sau</h2><p>{list?.meta.total ?? 0} thuật toán yêu thích</p></div></div><AlgorithmGrid items={list?.data ?? []} /></section>
           )}
