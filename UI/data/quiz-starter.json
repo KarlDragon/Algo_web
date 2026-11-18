@@ -1,0 +1,770 @@
+[
+  {
+    "title": "Kiến thức cơ bản về thuật toán",
+    "slug": "algorithm-basics",
+    "description": "Xây nền tảng vững chắc: khái niệm, tính chất và cách tư duy để giải quyết một bài toán.",
+    "category": "fundamentals",
+    "color": "purple",
+    "icon": "book",
+    "order": 1,
+    "questions": [
+      {
+        "code": "BASIC-01",
+        "level": "easy",
+        "prompt": "Thuật toán là gì?",
+        "options": [
+          "Một ngôn ngữ lập trình cụ thể",
+          "Một dãy hữu hạn các bước rõ ràng để giải quyết bài toán",
+          "Một loại bộ nhớ máy tính",
+          "Mọi đoạn mã không cần đầu vào"
+        ],
+        "correctOption": 1,
+        "explanation": "Thuật toán là tập hợp hữu hạn các chỉ dẫn xác định để giải một bài toán. Nó độc lập với ngôn ngữ lập trình và có thể được diễn tả bằng lời, lưu đồ hoặc mã giả."
+      },
+      {
+        "code": "BASIC-02",
+        "level": "easy",
+        "prompt": "Tính dừng của thuật toán có nghĩa là gì?",
+        "options": [
+          "Luôn chạy trong một giây",
+          "Không sử dụng vòng lặp",
+          "Kết thúc sau hữu hạn bước với đầu vào hợp lệ",
+          "Chỉ xử lý một phần tử"
+        ],
+        "correctOption": 2,
+        "explanation": "Tính dừng yêu cầu thuật toán kết thúc sau hữu hạn bước. Điều này không đồng nghĩa thời gian chạy phải ngắn hoặc không được dùng vòng lặp."
+      },
+      {
+        "code": "BASIC-03",
+        "level": "medium",
+        "prompt": "Đoạn mã s = 0; for i = 1 to 4: s = s + i cho kết quả s bằng bao nhiêu?",
+        "options": ["4", "6", "10", "16"],
+        "correctOption": 2,
+        "explanation": "Các lần cập nhật lần lượt cho s = 1, 3, 6, 10. Cần truy vết giá trị sau mỗi lượt lặp thay vì chỉ nhìn giá trị i cuối cùng."
+      },
+      {
+        "code": "BASIC-04",
+        "level": "medium",
+        "prompt": "Khi chọn thuật toán cho dữ liệu lớn, điều nào quan trọng nhất trong các lựa chọn sau?",
+        "options": [
+          "Tên thuật toán ngắn",
+          "Số dòng mã ít nhất",
+          "Không có hàm phụ",
+          "Tính đúng đắn cùng chi phí thời gian và bộ nhớ"
+        ],
+        "correctOption": 3,
+        "explanation": "Thuật toán trước tiên phải đúng. Sau đó cần đánh giá thời gian và bộ nhớ theo kích thước đầu vào; số dòng mã không thể đại diện cho hiệu quả."
+      },
+      {
+        "code": "BASIC-05",
+        "level": "hard",
+        "prompt": "Bất biến vòng lặp thường được dùng để làm gì?",
+        "options": [
+          "Chứng minh tính đúng đắn bằng một mệnh đề được giữ qua các lượt lặp",
+          "Bảo đảm mọi thuật toán có O(1)",
+          "Loại bỏ hoàn toàn dữ liệu đầu vào",
+          "Đo trực tiếp số giây CPU"
+        ],
+        "correctOption": 0,
+        "explanation": "Một bất biến đúng trước vòng lặp, được bảo toàn sau từng lượt và kết hợp với điều kiện kết thúc để suy ra hậu điều kiện. Đây là công cụ chứng minh tính đúng đắn."
+      },
+      {
+        "code": "BASIC-06",
+        "level": "hard",
+        "prompt": "Tìm phần tử lớn nhất trong một mảng không có thứ tự gồm n phần tử bằng phép so sánh cần ít nhất bao nhiêu so sánh trong trường hợp xấu nhất?",
+        "options": ["log₂ n", "n", "n − 1", "n²"],
+        "correctOption": 2,
+        "explanation": "Mỗi phần tử không phải lớn nhất cần thua ít nhất một lần so sánh để bị loại. Có n − 1 phần tử như vậy; duyệt tuyến tính đạt đúng cận dưới này."
+      }
+    ]
+  },
+  {
+    "title": "Bubble Sort",
+    "slug": "bubble-sort",
+    "description": "Nắm vững phép so sánh liền kề, hoán đổi và tối ưu dừng sớm qua từng lượt duyệt.",
+    "category": "sorting",
+    "color": "purple",
+    "icon": "sort",
+    "order": 2,
+    "questions": [
+      {
+        "code": "BUBBLE-01",
+        "level": "easy",
+        "prompt": "Bubble Sort cơ bản so sánh những phần tử nào?",
+        "options": [
+          "Hai phần tử liền kề",
+          "Phần tử đầu và cuối mỗi lượt",
+          "Hai phần tử ngẫu nhiên",
+          "Chỉ các phần tử tại chỉ số chẵn"
+        ],
+        "correctOption": 0,
+        "explanation": "Bubble Sort duyệt qua các cặp liền kề A[j] và A[j + 1]. Nếu cặp sai thứ tự thì đổi chỗ, nhờ đó giá trị lớn dần dịch về cuối."
+      },
+      {
+        "code": "BUBBLE-02",
+        "level": "easy",
+        "prompt": "Với Bubble Sort tăng dần quét từ trái sang phải, sau lượt đầu tiên phần tử nào ở đúng vị trí cuối cùng?",
+        "options": ["Phần tử nhỏ nhất", "Phần tử lớn nhất", "Phần tử ở giữa", "Mọi phần tử"],
+        "correctOption": 1,
+        "explanation": "Trong lượt quét trái sang phải, phần tử lớn hơn luôn được đẩy sang phải sau mỗi phép so sánh. Vì vậy giá trị lớn nhất đến cuối mảng."
+      },
+      {
+        "code": "BUBBLE-03",
+        "level": "medium",
+        "prompt": "Sau một lượt Bubble Sort từ trái sang phải trên [5, 1, 4, 2], mảng là gì?",
+        "options": ["[1, 2, 4, 5]", "[1, 5, 2, 4]", "[1, 4, 2, 5]", "[5, 4, 2, 1]"],
+        "correctOption": 2,
+        "explanation": "Các cặp lần lượt biến đổi: [1,5,4,2] → [1,4,5,2] → [1,4,2,5]. Giá trị 5 đã về cuối nhưng đoạn đầu chưa hoàn toàn được sắp xếp."
+      },
+      {
+        "code": "BUBBLE-04",
+        "level": "medium",
+        "prompt": "Điều kiện dừng sớm hợp lệ của Bubble Sort là gì?",
+        "options": [
+          "Vừa thực hiện một phép hoán đổi",
+          "Đã so sánh nửa mảng",
+          "Phần tử đầu nhỏ hơn phần tử cuối",
+          "Cả lượt duyệt không có hoán đổi nào"
+        ],
+        "correctOption": 3,
+        "explanation": "Nếu không có cặp liền kề nào sai thứ tự trong cả lượt thì mảng đã tăng dần. Cờ swapped giúp phát hiện trường hợp này để tránh các lượt không cần thiết."
+      },
+      {
+        "code": "BUBBLE-05",
+        "level": "hard",
+        "prompt": "Bubble Sort có cờ dừng sớm chạy trên mảng đã tăng dần với độ phức tạp tốt nhất nào?",
+        "options": ["O(n)", "O(n²)", "O(log n)", "O(1)"],
+        "correctOption": 0,
+        "explanation": "Thuật toán vẫn kiểm tra n − 1 cặp trong lượt đầu, nhưng không hoán đổi nên dừng. Do đó trường hợp tốt nhất là tuyến tính O(n), không phải O(1)."
+      },
+      {
+        "code": "BUBBLE-06",
+        "level": "hard",
+        "prompt": "Với [4, 3, 2, 1], Bubble Sort dùng hoán đổi liền kề cần tổng cộng bao nhiêu lần hoán đổi để tăng dần?",
+        "options": ["3", "4", "6", "8"],
+        "correctOption": 2,
+        "explanation": "Mảng đảo ngược có 4×3/2 = 6 nghịch thế. Mỗi lần hoán đổi một cặp liền kề sai thứ tự loại bỏ đúng một nghịch thế, nên cần 6 lần."
+      }
+    ]
+  },
+  {
+    "title": "Selection Sort",
+    "slug": "selection-sort",
+    "description": "Hiểu cách chọn phần tử nhỏ nhất và xây dựng dần vùng dữ liệu đã sắp xếp.",
+    "category": "sorting",
+    "color": "pink",
+    "icon": "sort",
+    "order": 3,
+    "questions": [
+      {
+        "code": "SELECT-01",
+        "level": "easy",
+        "prompt": "Selection Sort tăng dần chọn phần tử nào trong đoạn chưa sắp xếp?",
+        "options": [
+          "Phần tử cuối",
+          "Phần tử nhỏ nhất",
+          "Phần tử ở giữa",
+          "Phần tử xuất hiện nhiều nhất"
+        ],
+        "correctOption": 1,
+        "explanation": "Mỗi lượt tìm vị trí nhỏ nhất trong đoạn chưa sắp xếp rồi đổi chỗ với vị trí đầu đoạn. Vùng đầu đã sắp xếp được mở rộng thêm một phần tử."
+      },
+      {
+        "code": "SELECT-02",
+        "level": "easy",
+        "prompt": "Selection Sort cơ bản có cần một mảng phụ kích thước n không?",
+        "options": [
+          "Có, luôn cần hai mảng",
+          "Có, để lưu mọi hoán đổi",
+          "Không, có thể sắp xếp tại chỗ với O(1) bộ nhớ phụ",
+          "Chỉ khi n là số lẻ"
+        ],
+        "correctOption": 2,
+        "explanation": "Selection Sort chỉ cần một vài biến chỉ số, vị trí nhỏ nhất và biến tạm để đổi chỗ. Vì vậy bộ nhớ phụ có thể là O(1)."
+      },
+      {
+        "code": "SELECT-03",
+        "level": "medium",
+        "prompt": "Sau lượt Selection Sort đầu tiên trên [7, 4, 2, 5], mảng là gì?",
+        "options": ["[4, 2, 5, 7]", "[2, 7, 4, 5]", "[7, 4, 5, 2]", "[2, 4, 7, 5]"],
+        "correctOption": 3,
+        "explanation": "Phần tử nhỏ nhất là 2 tại chỉ số 2. Đổi 2 với phần tử đầu 7 tạo ra [2,4,7,5]; thuật toán không dịch toàn bộ đoạn."
+      },
+      {
+        "code": "SELECT-04",
+        "level": "medium",
+        "prompt": "Bất biến đúng của Selection Sort tăng dần sau i lượt là gì?",
+        "options": [
+          "i phần tử đầu là i giá trị nhỏ nhất và đã tăng dần",
+          "i phần tử cuối đã tăng dần",
+          "Mọi phần tử bằng nhau",
+          "Phần tử lớn nhất luôn ở giữa"
+        ],
+        "correctOption": 0,
+        "explanation": "Mỗi lượt đưa giá trị nhỏ nhất còn lại vào đầu đoạn chưa xử lý. Vì vậy tiền tố sau i lượt chứa đúng i giá trị nhỏ nhất theo thứ tự."
+      },
+      {
+        "code": "SELECT-05",
+        "level": "hard",
+        "prompt": "Selection Sort cơ bản thực hiện bao nhiêu phép so sánh phần tử với n phần tử?",
+        "options": ["n − 1", "n log₂ n", "n(n − 1)/2", "2n"],
+        "correctOption": 2,
+        "explanation": "Các lượt cần n−1, n−2, …, 1 phép so sánh. Tổng là n(n−1)/2, kể cả khi đầu vào đã sắp xếp, nên thời gian vẫn O(n²)."
+      },
+      {
+        "code": "SELECT-06",
+        "level": "hard",
+        "prompt": "Selection Sort đổi chỗ trực tiếp phần tử nhỏ nhất có luôn ổn định không?",
+        "options": [
+          "Luôn ổn định vì ít hoán đổi",
+          "Không; hoán đổi xa có thể đảo thứ tự các khóa bằng nhau",
+          "Chỉ ổn định khi dùng đệ quy",
+          "Ổn định với mọi mảng có phần tử trùng"
+        ],
+        "correctOption": 1,
+        "explanation": "Ví dụ [2a,2b,1]: đổi 1 với 2a thu được [1,2b,2a], đảo thứ tự 2a và 2b. Vì thế biến thể hoán đổi trực tiếp không ổn định."
+      }
+    ]
+  },
+  {
+    "title": "Insertion Sort",
+    "slug": "insertion-sort",
+    "description": "Luyện tư duy chèn phần tử, truy vết dịch chuyển và nhận biết dữ liệu gần có thứ tự.",
+    "category": "sorting",
+    "color": "purple",
+    "icon": "sort",
+    "order": 4,
+    "questions": [
+      {
+        "code": "INSERT-01",
+        "level": "easy",
+        "prompt": "Ý tưởng chính của Insertion Sort giống hoạt động nào?",
+        "options": [
+          "Bốc ngẫu nhiên một phần tử",
+          "Chia mảng thành hai nửa bằng nhau",
+          "Chèn từng lá bài vào đúng chỗ trong bộ bài đã có thứ tự",
+          "Luôn đổi đầu với cuối"
+        ],
+        "correctOption": 2,
+        "explanation": "Insertion Sort duy trì một tiền tố đã sắp xếp. Mỗi phần tử mới được chèn vào vị trí thích hợp trong tiền tố đó, tương tự xếp bài trên tay."
+      },
+      {
+        "code": "INSERT-02",
+        "level": "easy",
+        "prompt": "Ở mỗi lượt Insertion Sort, vùng nào đã có thứ tự?",
+        "options": [
+          "Tiền tố trước phần tử đang chèn",
+          "Toàn bộ hậu tố",
+          "Chỉ các chỉ số lẻ",
+          "Không có vùng nào"
+        ],
+        "correctOption": 0,
+        "explanation": "Trước khi xử lý A[i], đoạn A[0..i−1] đã sắp xếp. Sau khi chèn, đoạn A[0..i] cũng có thứ tự, tạo thành bất biến của thuật toán."
+      },
+      {
+        "code": "INSERT-03",
+        "level": "medium",
+        "prompt": "Khi chèn 3 vào tiền tố [2, 5, 7] trong [2, 5, 7, 3], kết quả sau lượt đó là gì?",
+        "options": ["[3, 2, 5, 7]", "[2, 5, 3, 7]", "[2, 7, 3, 5]", "[2, 3, 5, 7]"],
+        "correctOption": 3,
+        "explanation": "7 và 5 lớn hơn 3 nên được dịch sang phải. 2 nhỏ hơn 3 nên dừng dịch; đặt 3 ngay sau 2 tạo [2,3,5,7]."
+      },
+      {
+        "code": "INSERT-04",
+        "level": "medium",
+        "prompt": "Để Insertion Sort tăng dần giữ tính ổn định, nên dịch phần tử khi nào?",
+        "options": [
+          "Khi phần tử trước lớn hơn hoặc bằng khóa",
+          "Khi phần tử trước lớn hơn khóa",
+          "Khi phần tử trước nhỏ hơn khóa",
+          "Luôn dịch toàn bộ tiền tố"
+        ],
+        "correctOption": 1,
+        "explanation": "Chỉ dịch những phần tử lớn hơn khóa. Nếu cũng dịch phần tử bằng khóa, khóa mới có thể vượt lên trước khóa bằng nó xuất hiện sớm hơn và phá tính ổn định."
+      },
+      {
+        "code": "INSERT-05",
+        "level": "hard",
+        "prompt": "Độ phức tạp tốt nhất và xấu nhất của Insertion Sort lần lượt là gì?",
+        "options": ["O(1) và O(n)", "O(log n) và O(n log n)", "O(n) và O(n²)", "O(n²) và O(n²)"],
+        "correctOption": 2,
+        "explanation": "Mảng đã tăng dần chỉ cần kiểm tra mỗi phần tử một lần: O(n). Mảng đảo ngược yêu cầu dịch 1+2+…+(n−1) lần: O(n²)."
+      },
+      {
+        "code": "INSERT-06",
+        "level": "hard",
+        "prompt": "Insertion Sort dạng dịch chuyển chạy trên [4, 3, 2, 1]. Có bao nhiêu lần dịch phần tử sang phải, không tính ghi khóa vào chỗ mới?",
+        "options": ["6", "3", "4", "10"],
+        "correctOption": 0,
+        "explanation": "Chèn 3 cần dịch 1 phần tử, chèn 2 cần dịch 2, chèn 1 cần dịch 3. Tổng 1+2+3=6 phép dịch, tương ứng số nghịch thế của mảng."
+      }
+    ]
+  },
+  {
+    "title": "Merge Sort",
+    "slug": "merge-sort",
+    "description": "Chia để trị, trộn hai dãy và phân tích lời giải có thời gian O(n log n).",
+    "category": "sorting",
+    "color": "pink",
+    "icon": "layers",
+    "order": 5,
+    "questions": [
+      {
+        "code": "MERGE-01",
+        "level": "easy",
+        "prompt": "Merge Sort áp dụng chiến lược thiết kế nào?",
+        "options": ["Tham lam", "Chia để trị", "Vét cạn mọi hoán vị", "Tìm kiếm tuyến tính"],
+        "correctOption": 1,
+        "explanation": "Merge Sort chia mảng thành các bài toán nhỏ, giải đệ quy và kết hợp bằng thao tác trộn. Đây là mô hình điển hình của chia để trị."
+      },
+      {
+        "code": "MERGE-02",
+        "level": "easy",
+        "prompt": "Điều kiện dừng thường dùng của Merge Sort đệ quy là gì?",
+        "options": [
+          "Mảng có nhiều hơn 100 phần tử",
+          "Tổng mảng bằng 0",
+          "Đoạn cần xử lý có không quá một phần tử",
+          "Mọi phần tử khác nhau"
+        ],
+        "correctOption": 2,
+        "explanation": "Một đoạn gồm 0 hoặc 1 phần tử đã có thứ tự. Khi đạt kích thước này, đệ quy dừng rồi các đoạn được trộn dần thành đoạn lớn hơn."
+      },
+      {
+        "code": "MERGE-03",
+        "level": "medium",
+        "prompt": "Trộn hai dãy tăng dần [1, 4, 8] và [2, 3, 9] cho kết quả nào?",
+        "options": [
+          "[1, 4, 8, 2, 3, 9]",
+          "[2, 3, 9, 1, 4, 8]",
+          "[1, 2, 4, 3, 8, 9]",
+          "[1, 2, 3, 4, 8, 9]"
+        ],
+        "correctOption": 3,
+        "explanation": "Luôn lấy đầu nhỏ hơn giữa hai dãy: 1, 2, 3, 4, 8 rồi 9. Hai con trỏ chỉ đi về phía trước nên thao tác trộn có thời gian tuyến tính."
+      },
+      {
+        "code": "MERGE-04",
+        "level": "medium",
+        "prompt": "Khi hai đầu dãy bằng nhau, cách chọn nào giữ Merge Sort ổn định?",
+        "options": [
+          "Lấy phần tử từ dãy trái trước",
+          "Luôn lấy dãy phải trước",
+          "Đổi vị trí ngẫu nhiên",
+          "Bỏ một phần tử trùng"
+        ],
+        "correctOption": 0,
+        "explanation": "Các phần tử ở dãy trái có vị trí ban đầu sớm hơn dãy phải. Ưu tiên dãy trái khi khóa bằng nhau giữ nguyên thứ tự tương đối ban đầu."
+      },
+      {
+        "code": "MERGE-05",
+        "level": "hard",
+        "prompt": "Truy hồi T(n) = 2T(n/2) + O(n) của Merge Sort cho độ phức tạp nào?",
+        "options": ["O(n²)", "O(n log n)", "O(log n)", "O(2ⁿ)"],
+        "correctOption": 1,
+        "explanation": "Cây đệ quy có khoảng log₂ n tầng, mỗi tầng thực hiện tổng O(n) công việc trộn. Tổng chi phí là O(n log n)."
+      },
+      {
+        "code": "MERGE-06",
+        "level": "hard",
+        "prompt": "Merge Sort chuẩn trên mảng thường cần bộ nhớ phụ bao nhiêu?",
+        "options": ["O(1) trong mọi cách cài", "O(n²)", "O(n)", "O(2ⁿ)"],
+        "correctOption": 2,
+        "explanation": "Mảng tạm phục vụ trộn có tổng kích thước O(n); ngăn xếp đệ quy O(log n) không làm thay đổi bậc tổng O(n). Điều này khác với một số biến thể trộn tại chỗ phức tạp hơn."
+      }
+    ]
+  },
+  {
+    "title": "Quick Sort",
+    "slug": "quick-sort",
+    "description": "Chọn pivot, truy vết phân hoạch và khám phá vì sao cách chia mảng lại quan trọng.",
+    "category": "sorting",
+    "color": "purple",
+    "icon": "zap",
+    "order": 6,
+    "questions": [
+      {
+        "code": "QUICK-01",
+        "level": "easy",
+        "prompt": "Pivot trong Quick Sort là gì?",
+        "options": [
+          "Kích thước mảng phụ",
+          "Số lần đệ quy",
+          "Tên biến đếm kết quả",
+          "Phần tử mốc dùng để phân hoạch"
+        ],
+        "correctOption": 3,
+        "explanation": "Pivot là giá trị mốc để phân các phần tử thành nhóm nhỏ hơn và lớn hơn. Các đoạn sau phân hoạch tiếp tục được xử lý đệ quy."
+      },
+      {
+        "code": "QUICK-02",
+        "level": "easy",
+        "prompt": "Sau phân hoạch Lomuto đúng, pivot có tính chất nào?",
+        "options": [
+          "Đã ở vị trí đúng trong thứ tự cuối cùng",
+          "Luôn là phần tử đầu",
+          "Luôn là phần tử nhỏ nhất",
+          "Toàn bộ mảng đã tăng dần"
+        ],
+        "correctOption": 0,
+        "explanation": "Lomuto đưa pivot về vị trí sao cho các phần tử nhỏ hơn nằm bên trái và các phần tử lớn hơn hoặc bằng nằm bên phải. Hai đoạn có thể vẫn chưa sắp xếp."
+      },
+      {
+        "code": "QUICK-03",
+        "level": "medium",
+        "prompt": "Dùng Lomuto, chọn phần tử cuối làm pivot và so sánh < pivot. Phân hoạch [4, 2, 5, 1, 3] cho kết quả nào?",
+        "options": ["[1, 2, 3, 4, 5]", "[2, 1, 3, 4, 5]", "[3, 2, 5, 1, 4]", "[2, 4, 1, 3, 5]"],
+        "correctOption": 1,
+        "explanation": "Pivot là 3. Đưa 2 rồi 1 sang vùng nhỏ hơn pivot, thu được [2,1,5,4,3], sau đó đổi pivot với 5: [2,1,3,4,5]. Pivot ở chỉ số 2."
+      },
+      {
+        "code": "QUICK-04",
+        "level": "medium",
+        "prompt": "Sau khi pivot ở chỉ số p trong Quick Sort Lomuto, hai đoạn đệ quy là gì?",
+        "options": [
+          "[low, p] và [p, high]",
+          "[low, high] hai lần",
+          "[low, p−1] và [p+1, high]",
+          "Chỉ [p+1, high]"
+        ],
+        "correctOption": 2,
+        "explanation": "Pivot đã đúng vị trí nên phải được loại khỏi các lời gọi đệ quy. Giữ lại pivot trong một đoạn có thể khiến kích thước không giảm và gây đệ quy vô hạn."
+      },
+      {
+        "code": "QUICK-05",
+        "level": "hard",
+        "prompt": "Quick Sort với pivot cuối chạy trên mảng tăng dần có các khóa khác nhau. Trường hợp xấu nhất là gì?",
+        "options": ["O(n)", "O(log n)", "O(n log n)", "O(n²)"],
+        "correctOption": 3,
+        "explanation": "Pivot luôn lớn nhất nên mỗi lượt chia thành n−1 và 0 phần tử. Tổng công việc là n+(n−1)+…+1, dẫn đến O(n²)."
+      },
+      {
+        "code": "QUICK-06",
+        "level": "hard",
+        "prompt": "Vì sao chọn pivot ngẫu nhiên thường giúp Quick Sort hiệu quả?",
+        "options": [
+          "Giảm khả năng liên tục gặp phân hoạch lệch, đạt kỳ vọng O(n log n)",
+          "Bảo đảm mọi lần chia đều bằng nhau",
+          "Xóa hoàn toàn đệ quy",
+          "Bảo đảm xấu nhất O(n)"
+        ],
+        "correctOption": 0,
+        "explanation": "Ngẫu nhiên hóa làm thứ tự đầu vào khó ép thuật toán liên tục chọn pivot cực trị. Nó cho thời gian kỳ vọng O(n log n), nhưng không loại bỏ hoàn toàn khả năng O(n²)."
+      }
+    ]
+  },
+  {
+    "title": "Binary Search",
+    "slug": "binary-search",
+    "description": "Thu hẹp nửa khoảng tìm kiếm, tính chỉ số giữa và kiểm soát điều kiện biên.",
+    "category": "searching",
+    "color": "cyan",
+    "icon": "search",
+    "order": 7,
+    "questions": [
+      {
+        "code": "BINARY-01",
+        "level": "easy",
+        "prompt": "Điều kiện thông thường để tìm kiếm nhị phân trên mảng tăng dần là gì?",
+        "options": [
+          "Mảng phải được sắp xếp tăng dần",
+          "Mảng chỉ có số chẵn",
+          "Mảng không được có phần tử trùng",
+          "Mảng có độ dài là lũy thừa của 2"
+        ],
+        "correctOption": 0,
+        "explanation": "Binary Search dựa vào thứ tự để loại bỏ một nửa phạm vi. Mảng có thể chứa phần tử trùng và có độ dài bất kỳ, nhưng phải tuân theo thứ tự dùng để so sánh."
+      },
+      {
+        "code": "BINARY-02",
+        "level": "easy",
+        "prompt": "Mỗi bước tìm kiếm nhị phân thường giảm phạm vi còn khoảng bao nhiêu?",
+        "options": ["n−1 phần tử cố định", "Một nửa phạm vi trước đó", "Gấp đôi", "Không thay đổi"],
+        "correctOption": 1,
+        "explanation": "So sánh với phần tử giữa cho phép loại bỏ nửa bên trái hoặc bên phải, nên kích thước phạm vi giảm theo cấp số nhân qua các bước."
+      },
+      {
+        "code": "BINARY-03",
+        "level": "medium",
+        "prompt": "Trong [2, 5, 8, 12, 16, 23, 38], tìm 23 với left=0, right=6, mid=floor((left+right)/2). Sau so sánh đầu, left và right là gì?",
+        "options": ["left=0, right=2", "left=3, right=6", "left=4, right=6", "left=0, right=5"],
+        "correctOption": 2,
+        "explanation": "mid=3, A[3]=12 nhỏ hơn 23. Các chỉ số 0..3 đều không thể chứa mục tiêu, nên cập nhật left=mid+1=4 và giữ right=6."
+      },
+      {
+        "code": "BINARY-04",
+        "level": "medium",
+        "prompt": "Với khoảng đóng [left, right], điều kiện vòng lặp hợp lệ của Binary Search là gì?",
+        "options": [
+          "left < right − 1",
+          "left > right",
+          "left == right trong mọi bước",
+          "left <= right"
+        ],
+        "correctOption": 3,
+        "explanation": "Khoảng đóng còn một phần tử khi left==right và vẫn cần kiểm tra phần tử đó. Dừng khi left>right nghĩa là phạm vi đã rỗng."
+      },
+      {
+        "code": "BINARY-05",
+        "level": "hard",
+        "prompt": "Công thức mid nào tránh tràn số khi left và right đều lớn trong kiểu số nguyên có giới hạn?",
+        "options": [
+          "left + (right − left) / 2, lấy phần nguyên",
+          "(left + right) * 2",
+          "right − left",
+          "left * right / 2"
+        ],
+        "correctOption": 0,
+        "explanation": "Tính left+right có thể vượt giới hạn kiểu số trước khi chia. left+floor((right−left)/2) tránh tổng lớn này khi 0<=left<=right."
+      },
+      {
+        "code": "BINARY-06",
+        "level": "hard",
+        "prompt": "Trên mảng có phần tử trùng, khi A[mid] == target và muốn tìm vị trí xuất hiện đầu tiên, nên làm gì?",
+        "options": [
+          "Trả về mid ngay lập tức",
+          "Lưu mid làm ứng viên và tiếp tục tìm bên trái",
+          "Chỉ tiếp tục tìm bên phải",
+          "Xóa mọi phần tử trùng"
+        ],
+        "correctOption": 1,
+        "explanation": "Một kết quả bằng mục tiêu có thể chưa phải lần xuất hiện đầu. Lưu mid, đặt right=mid−1 và tiếp tục để tìm ứng viên sớm hơn."
+      }
+    ]
+  },
+  {
+    "title": "BFS và DFS",
+    "slug": "bfs-dfs",
+    "description": "Khám phá đồ thị theo chiều rộng và chiều sâu, hàng đợi, ngăn xếp và thứ tự duyệt.",
+    "category": "graphs",
+    "color": "emerald",
+    "icon": "network",
+    "order": 8,
+    "questions": [
+      {
+        "code": "GRAPH-01",
+        "level": "easy",
+        "prompt": "BFS thường dùng cấu trúc dữ liệu nào để duyệt theo từng lớp?",
+        "options": ["Ngăn xếp LIFO", "Cây tìm kiếm cân bằng", "Hàng đợi FIFO", "Mảng chỉ đọc"],
+        "correctOption": 2,
+        "explanation": "Hàng đợi FIFO xử lý các đỉnh theo thứ tự được phát hiện. Những đỉnh gần nguồn được xử lý trước các đỉnh ở lớp xa hơn."
+      },
+      {
+        "code": "GRAPH-02",
+        "level": "easy",
+        "prompt": "DFS thường được cài đặt bằng cách nào?",
+        "options": [
+          "Chỉ bằng hàng đợi ưu tiên",
+          "Chỉ bằng sắp xếp",
+          "Không cần đánh dấu đỉnh",
+          "Đệ quy hoặc ngăn xếp"
+        ],
+        "correctOption": 3,
+        "explanation": "DFS đi sâu một nhánh rồi quay lui. Ngăn xếp gọi hàm của đệ quy hoặc một ngăn xếp tường minh đều có thể ghi nhớ đường đi để quay lui."
+      },
+      {
+        "code": "GRAPH-03",
+        "level": "medium",
+        "prompt": "Đồ thị vô hướng có các cạnh A-B, A-C, B-D, C-E. BFS từ A, xét đỉnh kề theo chữ cái, cho thứ tự nào?",
+        "options": ["A, B, C, D, E", "A, B, D, C, E", "A, C, E, B, D", "D, B, A, C, E"],
+        "correctOption": 0,
+        "explanation": "Thăm A rồi đưa B,C vào hàng đợi. Xử lý B phát hiện D, xử lý C phát hiện E. Hàng đợi tạo thứ tự A,B,C,D,E theo từng lớp."
+      },
+      {
+        "code": "GRAPH-04",
+        "level": "medium",
+        "prompt": "Với cùng đồ thị A-B, A-C, B-D, C-E, DFS đệ quy từ A và xét đỉnh kề theo chữ cái cho thứ tự nào?",
+        "options": ["A, B, C, D, E", "A, B, D, C, E", "A, D, B, E, C", "A, C, B, D, E"],
+        "correctOption": 1,
+        "explanation": "DFS từ A đi vào B rồi D trước khi quay lui về A và đi vào C rồi E. Vì vậy thứ tự là A,B,D,C,E."
+      },
+      {
+        "code": "GRAPH-05",
+        "level": "hard",
+        "prompt": "Với danh sách kề, thời gian duyệt toàn bộ đồ thị bằng BFS/DFS là bao nhiêu?",
+        "options": ["O(V²) luôn luôn", "O(log V)", "O(V + E)", "O(V × E)"],
+        "correctOption": 2,
+        "explanation": "Mỗi đỉnh được xử lý một lần, mỗi cạnh được xét một lần với đồ thị có hướng hoặc hai lần với đồ thị vô hướng. Tổng là O(V+E), nếu khởi chạy thêm trên các thành phần chưa duyệt."
+      },
+      {
+        "code": "GRAPH-06",
+        "level": "hard",
+        "prompt": "Vì sao nên đánh dấu đã phát hiện ngay khi đưa một đỉnh vào hàng đợi BFS?",
+        "options": [
+          "Để biến BFS thành DFS",
+          "Để bỏ qua toàn bộ cạnh",
+          "Để sắp xếp tên đỉnh",
+          "Để một đỉnh không bị đưa vào hàng đợi nhiều lần bởi nhiều đỉnh kề"
+        ],
+        "correctOption": 3,
+        "explanation": "Một đỉnh có thể được tiếp cận từ nhiều cạnh. Đánh dấu ngay khi enqueue ngăn các bản sao trong hàng đợi, giữ hiệu quả tuyến tính và quan hệ cha rõ ràng."
+      }
+    ]
+  },
+  {
+    "title": "Độ phức tạp thuật toán Big O",
+    "slug": "big-o",
+    "description": "Đọc tốc độ tăng trưởng, phân tích vòng lặp và chọn lời giải phù hợp với dữ liệu lớn.",
+    "category": "thinking",
+    "color": "blue",
+    "icon": "chart",
+    "order": 9,
+    "questions": [
+      {
+        "code": "BIGO-01",
+        "level": "easy",
+        "prompt": "Big O mô tả điều gì?",
+        "options": [
+          "Cận trên tiệm cận của tốc độ tăng chi phí theo kích thước đầu vào",
+          "Số giây chính xác trên mọi máy",
+          "Số ký tự của mã nguồn",
+          "Nhãn chất lượng giao diện"
+        ],
+        "correctOption": 0,
+        "explanation": "Big O biểu diễn một cận trên về bậc tăng trưởng khi kích thước đầu vào lớn dần. Nó bỏ qua hằng số nhân và các số hạng bậc thấp; không cho thời gian CPU chính xác."
+      },
+      {
+        "code": "BIGO-02",
+        "level": "easy",
+        "prompt": "Với n lớn, thứ tự tăng trưởng nào từ chậm đến nhanh là đúng?",
+        "options": [
+          "O(n²), O(n), O(log n), O(1)",
+          "O(1), O(log n), O(n), O(n²)",
+          "O(log n), O(1), O(n²), O(n)",
+          "O(n), O(n²), O(1), O(log n)"
+        ],
+        "correctOption": 1,
+        "explanation": "Chi phí hằng số tăng chậm nhất, tiếp đến logarithm, tuyến tính và bình phương. Thứ tự nói về xu hướng khi n đủ lớn chứ không so sánh mọi hằng số thực tế."
+      },
+      {
+        "code": "BIGO-03",
+        "level": "medium",
+        "prompt": "for i=1..n: for j=1..n: work() với work() có O(1) cho tổng thời gian nào?",
+        "options": ["O(n)", "O(log n)", "O(n²)", "O(1)"],
+        "correctOption": 2,
+        "explanation": "Vòng ngoài n lượt, mỗi lượt vòng trong n lượt, nên work() chạy n×n lần. Vì mỗi lần O(1), tổng là O(n²)."
+      },
+      {
+        "code": "BIGO-04",
+        "level": "medium",
+        "prompt": "Vòng lặp i=1; while i<n: i=i*2 có bao nhiêu lượt theo bậc tăng trưởng?",
+        "options": ["O(n²)", "O(n)", "O(2ⁿ)", "O(log n)"],
+        "correctOption": 3,
+        "explanation": "Sau k lượt i=2ᵏ. Khi 2ᵏ>=n thì dừng, tương đương k>=log₂n. Vì vậy số lượt có bậc O(log n)."
+      },
+      {
+        "code": "BIGO-05",
+        "level": "hard",
+        "prompt": "for i=1..n: for j=1..i: work() với work() O(1) có độ phức tạp chặt nào?",
+        "options": ["Θ(n²)", "Θ(n)", "Θ(n log n)", "Θ(log n)"],
+        "correctOption": 0,
+        "explanation": "Tổng số lần thực hiện là 1+2+…+n=n(n+1)/2, có bậc bình phương. Hình tam giác của miền lặp làm giảm hằng số, không giảm bậc."
+      },
+      {
+        "code": "BIGO-06",
+        "level": "hard",
+        "prompt": "Một thuật toán thực hiện hai giai đoạn tuần tự có chi phí Θ(n log n) và Θ(n²). Tổng chi phí chặt là gì?",
+        "options": ["Θ(n³ log n)", "Θ(n²)", "Θ(log n)", "Θ(n log n)"],
+        "correctOption": 1,
+        "explanation": "Hai giai đoạn nối tiếp cộng chi phí, không nhân. Trong n log n+n², số hạng n² chi phối khi n lớn nên tổng là Θ(n²)."
+      }
+    ]
+  },
+  {
+    "title": "Backtracking & Dynamic Programming",
+    "slug": "backtracking-dp",
+    "description": "Từ thử và quay lui đến lưu lời giải bài toán con: chọn chiến lược phù hợp cho từng bài toán.",
+    "category": "thinking",
+    "color": "orange",
+    "icon": "brain",
+    "order": 10,
+    "questions": [
+      {
+        "code": "DP-01",
+        "level": "easy",
+        "prompt": "Backtracking thường làm gì khi một lựa chọn không thể dẫn đến lời giải hợp lệ?",
+        "options": [
+          "Lặp lại mãi lựa chọn đó",
+          "Kết thúc mọi nhánh còn lại",
+          "Hoàn tác lựa chọn và thử nhánh khác",
+          "Tự động sắp xếp dữ liệu"
+        ],
+        "correctOption": 2,
+        "explanation": "Backtracking xây dựng nghiệm từng bước. Khi nhánh không hợp lệ hoặc không thể thành công, thuật toán quay lui, khôi phục trạng thái rồi thử lựa chọn khác."
+      },
+      {
+        "code": "DP-02",
+        "level": "easy",
+        "prompt": "Ý tưởng cốt lõi của quy hoạch động là gì?",
+        "options": [
+          "Luôn chọn phương án tốt nhất ngay lập tức",
+          "Luôn thử mọi hoán vị mà không lưu gì",
+          "Không sử dụng bài toán con",
+          "Lưu và tái sử dụng kết quả bài toán con"
+        ],
+        "correctOption": 3,
+        "explanation": "Quy hoạch động tận dụng các bài toán con lặp lại bằng ghi nhớ hoặc lập bảng. Khi bài toán có cấu trúc phù hợp, việc tái sử dụng tránh tính cùng kết quả nhiều lần."
+      },
+      {
+        "code": "DP-03",
+        "level": "medium",
+        "prompt": "Với F(0)=0, F(1)=1 và F(n)=F(n−1)+F(n−2), F(6) bằng bao nhiêu?",
+        "options": ["8", "6", "13", "5"],
+        "correctOption": 0,
+        "explanation": "Lập bảng lần lượt: 0,1,1,2,3,5,8. Hai giá trị gần nhất đã biết cho phép tính giá trị tiếp theo mà không gọi lại các bài toán cũ."
+      },
+      {
+        "code": "DP-04",
+        "level": "medium",
+        "prompt": "Khi sinh tập con bằng backtracking, thao tác nào thường cần sau khi quay về từ nhánh có chọn một phần tử?",
+        "options": [
+          "Nhân đôi mọi phần tử",
+          "Bỏ phần tử vừa thêm để khôi phục trạng thái",
+          "Xóa toàn bộ dữ liệu đầu vào",
+          "Đổi ngẫu nhiên thứ tự nhánh"
+        ],
+        "correctOption": 1,
+        "explanation": "Một nhánh thường theo mẫu chọn → đệ quy → hoàn tác. Bỏ phần tử vừa thêm bảo đảm nhánh tiếp theo bắt đầu từ đúng trạng thái của nút cha."
+      },
+      {
+        "code": "DP-05",
+        "level": "hard",
+        "prompt": "Fibonacci lập bảng có thời gian O(n). Nếu chỉ cần F(n), có thể giảm bộ nhớ phụ xuống mức nào?",
+        "options": [
+          "O(n²)",
+          "O(log n)",
+          "O(1), bằng cách chỉ giữ hai giá trị trước",
+          "Không thể giảm dưới O(n)"
+        ],
+        "correctOption": 2,
+        "explanation": "Để tính F(i) chỉ cần F(i−1) và F(i−2). Ghi đè hai biến theo mỗi bước cho bộ nhớ hằng số, với giả định phép toán trên số có chi phí hằng số."
+      },
+      {
+        "code": "DP-06",
+        "level": "hard",
+        "prompt": "Bài toán balô 0/1 với n món, sức chứa nguyên W, lập bảng DP tiêu chuẩn có thời gian nào?",
+        "options": [
+          "O(n + W)",
+          "O(log W)",
+          "O(2ⁿ) trong mọi cách DP",
+          "O(nW), giả đa thức theo giá trị W"
+        ],
+        "correctOption": 3,
+        "explanation": "Bảng có n×W trạng thái, mỗi trạng thái xét lấy hoặc không lấy món trong O(1). Thời gian O(nW) là giả đa thức vì phụ thuộc giá trị W, không chỉ số bit biểu diễn W."
+      },
+      {
+        "code": "DP-07",
+        "level": "medium",
+        "prompt": "Khi dùng memoization cho bài toán balô, vì sao thường cần cả chỉ số món i và sức chứa còn lại w trong khóa ghi nhớ?",
+        "options": [
+          "Vì cả i và w cùng xác định bài toán con cần giải",
+          "Vì mọi hàm đều bắt buộc có hai tham số",
+          "Để bảo đảm bộ nhớ luôn là O(1)",
+          "Để tránh cần điều kiện dừng"
+        ],
+        "correctOption": 0,
+        "explanation": "Hai trạng thái có cùng sức chứa nhưng xét những tập món còn lại khác nhau có thể cho đáp án khác nhau. Khóa ghi nhớ phải biểu diễn đầy đủ trạng thái ảnh hưởng đến lời giải, chẳng hạn cặp (i, w); chỉ ghi nhớ theo w có thể trộn nhầm các bài toán con."
+      }
+    ]
+  }
+]
