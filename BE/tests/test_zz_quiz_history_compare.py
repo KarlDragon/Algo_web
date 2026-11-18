@@ -90,7 +90,7 @@ def test_history_touches_without_changing_progress_and_filters_soft_deleted():
         assert first_view.json()['progress_percent'] == 10
         first_timestamp = first_view.json()['last_viewed_at']
 
-        time.sleep(0.002)
+        time.sleep(0.01)
         revisited = client.post(f"/algorithms/{first['id']}/view", headers=learner)
         assert revisited.status_code == 200, revisited.text
         assert revisited.json()['last_viewed_at'] > first_timestamp
@@ -103,7 +103,7 @@ def test_history_touches_without_changing_progress_and_filters_soft_deleted():
         assert completed.status_code == 200, completed.text
         completed_at = completed.json()['completed_at']
         completed_progress = completed.json()['progress_percent']
-        time.sleep(0.002)
+        time.sleep(0.01)
         touched_completed = client.post(f"/algorithms/{first['id']}/view", headers=learner)
         assert touched_completed.status_code == 200, touched_completed.text
         assert touched_completed.json()['status'] == 'COMPLETED'
@@ -133,6 +133,12 @@ def test_history_touches_without_changing_progress_and_filters_soft_deleted():
         visible_history = client.get('/users/me/history', headers=learner).json()['data']
         assert [row['algorithm']['id'] for row in visible_history] == [second['id']]
 
+        # Spec test 5: user A cannot see user B's history
+        stranger, _, _ = new_user(client, 'historystranger')
+        stranger_history = client.get('/users/me/history', headers=stranger).json()
+        assert stranger_history['meta']['total'] == 0
+        assert stranger_history['data'] == []
+
 
 def test_compare_accepts_ids_and_slugs_preserves_order_and_validates():
     with TestClient(app) as client:
@@ -149,6 +155,11 @@ def test_compare_accepts_ids_and_slugs_preserves_order_and_validates():
             'ids': f"{algorithms[2]['id']},{algorithms[0]['id']}",
         })
         assert by_ids.status_code == 200, by_ids.text
+        # /algorithms/compare must be routed to the compare endpoint, not to
+        # /algorithms/{slug_or_id} (which would return a single AlgorithmDetail
+        # with theory/pseudocode and no 'algorithms' key).
+        assert 'algorithms' in by_ids.json()
+        assert 'theory' not in by_ids.json()
         assert [item['id'] for item in by_ids.json()['algorithms']] == [
             algorithms[2]['id'], algorithms[0]['id'],
         ]
@@ -192,12 +203,22 @@ def test_reserved_category_slugs_are_rejected_on_create_and_update():
         headers, user_id, username = new_user(client, 'slugadmin')
         admin = promote_to_admin(client, headers, user_id, username)
 
-        created = client.post('/categories', headers=admin, json={
-            'name': 'Lịch sử', 'slug': 'history',
-        })
-        assert created.status_code == 400, created.text
+        # Spec reserved set: algorithm, algorithms, search, favorites, profile, history, compare, quiz
+        for reserved in ('history', 'compare', 'quiz', 'algorithms', 'search'):
+            created = client.post('/categories', headers=admin, json={
+                'name': f'Reserved {reserved}', 'slug': reserved,
+            })
+            assert created.status_code == 400, f'{reserved}: {created.text}'
+
         category_id = new_category(client, admin, f'custom-{uuid4().hex[:10]}')
-        updated = client.put(f'/categories/{category_id}', headers=admin, json={
-            'name': 'Danh mục đổi tên', 'slug': 'compare',
+        for reserved in ('history', 'compare', 'quiz'):
+            updated = client.put(f'/categories/{category_id}', headers=admin, json={
+                'name': 'Danh mục đổi tên', 'slug': reserved,
+            })
+            assert updated.status_code == 400, f'{reserved}: {updated.text}'
+
+        # A non-reserved slug still works, so the guard doesn't over-block
+        ok = client.put(f'/categories/{category_id}', headers=admin, json={
+            'name': 'Danh mục đổi tên', 'slug': f'custom-renamed-{uuid4().hex[:8]}',
         })
-        assert updated.status_code == 400, updated.text
+        assert ok.status_code == 200, ok.text
