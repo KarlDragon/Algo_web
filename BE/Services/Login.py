@@ -10,26 +10,18 @@ class LoginService:
         self.password_hash = PasswordHash.recommended()
 
     def verify_password(self, password, hashed_password):
-        return self.password_hash.verify(
-            password,
-            hashed_password
-        )
+        return self.password_hash.verify(password, hashed_password)
 
     def login_user(self, login, password):
-        if login == "" or password == "":
+        login = login.strip()
+        if not login or not password:
             return None
 
-        user = self.auth_repository.get_user_by_username_or_email(
-            login
-        )
-
+        user = self.auth_repository.get_user_by_username_or_email(login)
         if user is None:
             return None
 
-        if not self.verify_password(
-            password,
-            user.hashPassword
-        ):
+        if not self.verify_password(password, user.hashPassword):
             return None
 
         return user

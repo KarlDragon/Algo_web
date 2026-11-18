@@ -1,0 +1,3 @@
+-r requirements.txt
+# Redis is optional in local development; required when REDIS_URL is configured.
+redis>=5,<7
